@@ -1,7 +1,9 @@
-<<<<<<< HEAD
-# DATNPCGearFrontEndUser
+# Project Idea
+This is a Frontend store for selling electronic devices using latest version of bootstrap ,angular and typscript.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.0.0-next.9.
+# AngularProductBootstrap
+
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.3.
 
 ## Development server
 
@@ -25,7 +27,4 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-=======
-# DATN_PCGear_FrontEnd_User
->>>>>>> 6bce3d7e68dedc648afa1511ab2428941ff00eaf
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.

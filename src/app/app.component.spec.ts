@@ -14,16 +14,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'DATN_PCGear_FrontEnd_User' title`, () => {
+  it(`should have the 'angular-product-bootstrap' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('DATN_PCGear_FrontEnd_User');
+    expect(app.title).toEqual('angular-product-bootstrap');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, DATN_PCGear_FrontEnd_User');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, angular-product-bootstrap');
   });
 });
