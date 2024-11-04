@@ -13,7 +13,6 @@ import { ApiService } from '../services/api.service';
     CommonModule
   ],
   templateUrl: './register.component.html',
-  
 })
 export class RegisterComponent {
   registerForm: FormGroup;
@@ -24,7 +23,6 @@ export class RegisterComponent {
     private apiService: ApiService,
     private router: Router
   ) {
-    // Initialize the form group with validation rules
     this.registerForm = this.fb.group({
       id: ['', Validators.required],
       name: ['', Validators.required],
@@ -32,7 +30,7 @@ export class RegisterComponent {
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]],
       email: ['', [Validators.required, Validators.email]],
       address: ['', Validators.required],
-      image: [null]  // Optional image upload
+      image: [null]
     });
   }
 
@@ -45,34 +43,28 @@ export class RegisterComponent {
   }
 
   register() {
-    if (this.registerForm.valid) {
-      const formData = new FormData();
-      formData.append('id', this.registerForm.get('id')?.value);
-      formData.append('name', this.registerForm.get('name')?.value);
-      formData.append('password', this.registerForm.get('password')?.value);
-      formData.append('phone', this.registerForm.get('phone')?.value);
-      formData.append('email', this.registerForm.get('email')?.value);
-      formData.append('address', this.registerForm.get('address')?.value);
-      
-      const image = this.registerForm.get('image')?.value;
-      if (image) {
-        formData.append('image', image);
-      }
-
-      // Send the form data to the API service
-      this.apiService.post('accounts/register', formData).subscribe({
-        next: (response) => {
-          console.log(response);
-          alert('Registration successful!');
-          this.router.navigate(['/login']);
-        },
-        error: (error) => {
-          this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
-          console.error('Registration error:', error);
-        }
-      });
-    } else {
+    if (this.registerForm.invalid) {
       this.errorMessage = 'Please fill out all required fields correctly.';
+      return;
     }
+
+    const formData = new FormData();
+    Object.keys(this.registerForm.controls).forEach(key => {
+      const value = this.registerForm.get(key)?.value;
+      if (value !== null && value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+
+    this.apiService.post('accounts/register', formData).subscribe({
+      next: () => {
+        alert('Registration successful!');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        console.error('Registration error:', error);
+      }
+    });
   }
 }
