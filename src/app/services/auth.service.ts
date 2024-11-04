@@ -3,6 +3,7 @@ import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Account } from '../account/account.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,17 +12,50 @@ export class AuthService {
   constructor(private apiService: ApiService, private router: Router) {}
 
   // Login method to authenticate the user and store token and user data
+  // login(id: string, password: string): Observable<string> {
+  //   const body = { id, password };
+  //   return this.apiService.post<{ token: string; user: Account }>('auth/login', body).pipe(
+  //     tap(response => {
+  //       console.log("API Response:", response); // Log entire response to inspect its structure
+  //       localStorage.setItem('authToken', response.token);
+      
+  //       if (response.user) {
+  //         localStorage.setItem('userData', JSON.stringify(response.user));
+  //       } else {
+  //         console.error("User data is missing in the API response");
+  //       }
+      
+  //       this.router.navigate(['/']);
+  //     }),
+      
+  //     map(response => response.token)
+  //   );
+  // }
+  
+
   login(id: string, password: string): Observable<string> {
     const body = { id, password };
-    return this.apiService.post<{ token: string; user: { name: string; role: string } }>('auth/login', body).pipe(
+    return this.apiService.post<{ token: string; id: string; name: string; phone: string; email: string; address: string; admin: boolean }>('auth/login', body).pipe(
       tap(response => {
-        // Store token and user data in localStorage
+        console.log("API Response:", response); // Log entire response to inspect its structure
         localStorage.setItem('authToken', response.token);
-        localStorage.setItem('userData', JSON.stringify(response.user));
+  
+        // Store user data directly, as API response is the user data itself
+        localStorage.setItem('userData', JSON.stringify({
+          id: response.id,
+          name: response.name,
+          phone: response.phone,
+          email: response.email,
+          address: response.address,
+          admin: response.admin
+        }));
+  
+        this.router.navigate(['/']);
       }),
       map(response => response.token)
     );
   }
+  
 
   // Logout method to clear token and user data
   logout(): void {
@@ -30,25 +64,41 @@ export class AuthService {
     this.router.navigate(['/login']); // Redirect to login page
   }
 
-  // Retrieve token from localStorage
-  getToken(): string | null {
-    return localStorage.getItem('authToken');
+  // Get user data (Account) from localStorage with error handling
+  getUserData(): Account | null {
+    const userData = localStorage.getItem('userData');
+    
+    // Check if userData exists and is not set to "undefined" or null
+    if (!userData || userData === "undefined") {
+      return null; // Return null if no valid user data is found
+    }
+  
+    try {
+      return JSON.parse(userData) as Account; // Parse and cast to Account
+    } catch (error) {
+      console.error("Error parsing user data from localStorage", error);
+      localStorage.removeItem('userData'); // Clear invalid data from localStorage
+      return null; // Return null on error
+    }
   }
 
-  // Get user data (name and role) from localStorage
-  getUserData(): { name: string; role: string } | null {
-    const userData = localStorage.getItem('userData');
-    return userData ? JSON.parse(userData) : null;
+  // Retrieve the user ID from stored user data
+  getUserId(): string | null {
+    return this.getUserData()?.id || null; // Use optional chaining for simplicity
   }
 
   // Check if user is logged in based on the presence of a token
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return this.getToken() !== null; // Returns true if token exists
   }
 
   // Check if the logged-in user has admin privileges
   isAdmin(): boolean {
-    const user = this.getUserData();
-    return user?.role === 'admin';
+    return this.getUserData()?.admin === true; // Use optional chaining and check admin status
+  }
+
+  // Retrieve token from localStorage
+  getToken(): string | null {
+    return localStorage.getItem('authToken'); // Return the token or null
   }
 }

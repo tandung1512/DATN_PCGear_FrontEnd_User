@@ -29,16 +29,28 @@
           <li class="nav-item"><a class="nav-link" href="#">Enterprise</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Support</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
+
+          <!-- Hiển thị nút Login/Register nếu người dùng chưa đăng nhập -->
+          <ng-container *ngIf="!isLoggedIn">
+            <li class="nav-item">
+              <button class="btn btn-outline-light me-2" (click)="login()">Login</button>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-outline-light" (click)="register()">Register</button>
+            </li>
+          </ng-container>
           
-          <!-- Login and Register buttons -->
-          <li class="nav-item">
-            <button class="btn btn-outline-light me-2" (click)="login()">Login</button>
-            <button class="btn btn-outline-light" (click)="register()">Register</button>
-          </li>
+          <!-- Hiển thị lời chào và nút Logout nếu người dùng đã đăng nhập -->
+          <ng-container *ngIf="isLoggedIn">
+            <li class="nav-item">
+              <span class="nav-link text-light">Xin chào, {{ userName }}</span>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-outline-light ms-2" (click)="logout()">Logout</button>
+            </li>
+          </ng-container>
         </ul>
       </div>
     </div>
-    
   </div>
 </nav>
-
