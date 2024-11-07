@@ -47,7 +47,7 @@ export class HeaderComponent implements OnInit {
   }
 
   // Navigate to User Info Update page
-  updateUserInfo(): void {
+  goToUserProfile() {
     this.router.navigate(['/user-info']);
   }
 
