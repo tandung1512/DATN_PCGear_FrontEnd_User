@@ -1,21 +1,43 @@
-<div class="login-container">
-  <h2>Login</h2>
+<div class="login-container p-4" style="max-width: 350px; margin: 0 auto; border: 1px solid #ccc; border-radius: 8px;">
+  <h2 class="text-center mb-4">Đăng nhập</h2>
   <form [formGroup]="loginForm" (ngSubmit)="login()">
+    
+    <!-- ID Field -->
     <div class="mb-3">
       <label for="id" class="form-label">ID</label>
       <input type="text" id="id" formControlName="id" class="form-control" />
       <div *ngIf="loginForm.get('id')?.invalid && loginForm.get('id')?.touched" class="text-danger">
-        ID is required.
+        ID không được để trống.
       </div>
     </div>
+
+    <!-- Password Field -->
     <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
+      <label for="password" class="form-label">Mật Khẩu</label>
       <input type="password" id="password" formControlName="password" class="form-control" />
       <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger">
-        Password is required and must be at least 6 characters.
+        Mật khẩu không được để trống và phải có 6 kí tự trở lên.
       </div>
     </div>
-    <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Login</button>
+
+    <!-- Remember Me Checkbox -->
+    <div class="form-check mb-3">
+      <input type="checkbox" id="rememberMe" class="form-check-input">
+      <label for="rememberMe" class="form-check-label">Nhớ mật khẩu?</label>
+    </div>
+
+    <!-- Login Button -->
+    <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">Đăng Nhập</button>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+
+    <!-- Additional Links -->
+    <div class="text-center">
+      <br>
+      <a href="#" class="small text-decoration-none text-black">Quên mật khẩu?</a>
+      <br>
+      <a href="/register" class="small text-decoration-none">Chưa có tài khoản? Đăng ký ngay</a>
+    </div>
   </form>
-  <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
 </div>

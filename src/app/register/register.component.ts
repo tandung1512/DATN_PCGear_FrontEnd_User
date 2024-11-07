@@ -44,7 +44,7 @@ export class RegisterComponent {
 
   register() {
     if (this.registerForm.invalid) {
-      this.errorMessage = 'Please fill out all required fields correctly.';
+      this.errorMessage = 'Vui lòng nhập đầy đủ thông tin.';
       return;
     }
 
@@ -58,11 +58,11 @@ export class RegisterComponent {
 
     this.apiService.post('accounts/register', formData).subscribe({
       next: () => {
-        alert('Registration successful!');
+        alert('Đăng kí thành công.Chuyển hướng qua đăng nhập!');
         this.router.navigate(['/login']);
       },
       error: (error) => {
-        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        this.errorMessage = error.error?.message || 'Đăng kí thất bại, Hãy thử lại sau!';
         console.error('Registration error:', error);
       }
     });

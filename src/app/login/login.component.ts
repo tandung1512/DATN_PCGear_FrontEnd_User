@@ -37,17 +37,17 @@ export class LoginComponent {
         next: (token) => {
           console.log('Login successful, token:', token);
           this.router.navigate(['/']).then(() => {
-            
+
             location.reload(); // Reload the homepage after navigation
           });
         },
         error: (error) => {
-          this.errorMessage = 'Invalid ID or password';
+          this.errorMessage = 'Sai ID hoặc mật khẩu';
           console.error('Login error:', error);
         }
       });
     } else {
-      this.errorMessage = 'Please fill out all required fields';
+      this.errorMessage = 'Vui lòng nhập đầy đủ thông tin!';
     }
   }
 }

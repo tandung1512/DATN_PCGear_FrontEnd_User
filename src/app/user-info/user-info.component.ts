@@ -47,7 +47,7 @@ export class UserInfoComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading user profile:', error);
-        this.errorMessage = error.error?.message || 'Could not load user profile. Please try again later.';
+        this.errorMessage = error.error?.message || 'Không thể tải thông tin người dùng.';
       }
     });
   }
@@ -74,18 +74,18 @@ export class UserInfoComponent implements OnInit {
 
       this.apiService.put(`accounts/${this.userId}`, formData).subscribe({
         next: () => {
-          this.successMessage = 'Profile updated successfully!';
+          this.successMessage = 'Chỉnh sửa thông tin người dùng thành công!';
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 2000);
         },
         error: (error) => {
           console.error('Error updating profile:', error);
-          this.errorMessage = error.error?.message || 'Profile update failed. Please try again.';
+          this.errorMessage = error.error?.message || 'Cập nhật thất bại. Hãy thử lại sau!';
         }
       });
     } else {
-      this.errorMessage = 'Please fill out all required fields correctly.';
+      this.errorMessage = 'Vui lòng nhập đầy đủ thông tin.';
     }
   }
 }
