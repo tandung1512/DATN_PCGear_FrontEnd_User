@@ -31,6 +31,7 @@ export class HeaderComponent implements OnInit {
         this.userName = userData.name || 'User';
         console.log("User Name:", this.userName); // Log name or fallback value
         this.isAdmin = userData.admin;
+        console.log("User is Admin:", this.isAdmin); 
       }
     }
   }
@@ -51,12 +52,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/user-info']);
   }
 
-  // Navigate to Admin Dashboard if user is an admin
-  goToAdminDashboard(): void {
-    if (this.isAdmin) {
-      this.router.navigate(['/admin-dashboard']);
-    }
-  }
+  
+  
 
   // Logout and clear session data
   logout(): void {

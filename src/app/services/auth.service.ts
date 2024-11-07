@@ -11,28 +11,6 @@ import { Account } from '../account/account.model';
 export class AuthService {
   constructor(private apiService: ApiService, private router: Router) {}
 
-  // Login method to authenticate the user and store token and user data
-  // login(id: string, password: string): Observable<string> {
-  //   const body = { id, password };
-  //   return this.apiService.post<{ token: string; user: Account }>('auth/login', body).pipe(
-  //     tap(response => {
-  //       console.log("API Response:", response); // Log entire response to inspect its structure
-  //       localStorage.setItem('authToken', response.token);
-      
-  //       if (response.user) {
-  //         localStorage.setItem('userData', JSON.stringify(response.user));
-  //       } else {
-  //         console.error("User data is missing in the API response");
-  //       }
-      
-  //       this.router.navigate(['/']);
-  //     }),
-      
-  //     map(response => response.token)
-  //   );
-  // }
-  
-
   login(id: string, password: string): Observable<string> {
     const body = { id, password };
     return this.apiService.post<{ token: string; id: string; name: string; phone: string; email: string; address: string; admin: boolean }>('auth/login', body).pipe(
@@ -93,9 +71,17 @@ export class AuthService {
   }
 
   // Check if the logged-in user has admin privileges
-  isAdmin(): boolean {
-    return this.getUserData()?.admin === true; // Use optional chaining and check admin status
+  // isAdmin(): boolean {
+  //   return this.getUserData()?.admin === true; // Use optional chaining and check admin status
+  // }
+// Check if the logged-in user has admin privileges
+isAdmin(): boolean {
+  const userData = this.getUserData();
+  if (userData && userData.admin !== undefined) {
+    return userData.admin; // Return true if user is an admin
   }
+  return false; // Return false if admin status is not available
+}
 
   // Retrieve token from localStorage
   getToken(): string | null {
