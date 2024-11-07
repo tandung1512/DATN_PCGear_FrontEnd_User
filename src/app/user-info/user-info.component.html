@@ -1,0 +1,77 @@
+<!-- user-info.component.html -->
+<div class="user-info-container">
+    <h2>Edit User Information</h2>
+    
+    <!-- Display success message -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+    
+    <!-- Display error message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+    
+    <form [formGroup]="userInfoForm" (ngSubmit)="updateProfile()">
+      <!-- ID field (disabled) -->
+      <div class="form-group">
+        <label for="id">User ID</label>
+        <input type="text" id="id" formControlName="id" class="form-control"  readonly required/>
+      </div>
+      
+      <!-- Name field -->
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" formControlName="name" class="form-control" required />
+        <div *ngIf="userInfoForm.get('name')?.invalid && userInfoForm.get('name')?.touched" class="text-danger">
+          Name is required.
+        </div>
+      </div>
+      
+      <!-- Password field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" formControlName="password" class="form-control" required />
+        <div *ngIf="userInfoForm.get('password')?.invalid && userInfoForm.get('password')?.touched" class="text-danger">
+          Password is required (min 6 characters).
+        </div>
+      </div>
+      
+      <!-- Phone field -->
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" formControlName="phone" class="form-control" required />
+        <div *ngIf="userInfoForm.get('phone')?.invalid && userInfoForm.get('phone')?.touched" class="text-danger">
+          Valid phone number is required (10-11 digits).
+        </div>
+      </div>
+      
+      <!-- Email field -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" class="form-control" required />
+        <div *ngIf="userInfoForm.get('email')?.invalid && userInfoForm.get('email')?.touched" class="text-danger">
+          Valid email is required.
+        </div>
+      </div>
+      
+      <!-- Address field -->
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" id="address" formControlName="address" class="form-control" required />
+        <div *ngIf="userInfoForm.get('address')?.invalid && userInfoForm.get('address')?.touched" class="text-danger">
+          Address is required.
+        </div>
+      </div>
+      
+      <!-- Image upload field -->
+      <div class="form-group">
+        <label for="image">Profile Image</label>
+        <input type="file" id="image" (change)="onFileSelected($event)" class="form-control" />
+      </div>
+      
+      <!-- Submit button -->
+      <button type="submit" class="btn btn-primary" [disabled]="userInfoForm.invalid">Update Profile</button>
+    </form>
+  </div>
+  

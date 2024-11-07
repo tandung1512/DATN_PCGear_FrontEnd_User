@@ -36,7 +36,9 @@ export class LoginComponent {
       this.authService.login(id, password).subscribe({
         next: (token) => {
           console.log('Login successful, token:', token);
-          this.router.navigate(['/']);
+          this.router.navigate(['/']).then(() => {
+            location.reload(); // Reload the homepage after navigation
+          });
         },
         error: (error) => {
           this.errorMessage = 'Invalid ID or password';
