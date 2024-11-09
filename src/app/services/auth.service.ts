@@ -15,11 +15,11 @@ export class AuthService {
     const body = { id, password };
     return this.apiService.post<{ token: string; id: string; name: string; phone: string; email: string; address: string; admin: boolean }>('auth/login', body).pipe(
       tap(response => {
-        console.log("API Response:", response); // Log entire response to inspect its structure
-        localStorage.setItem('authToken', response.token);
+        console.log("API Response:", response); // Ghi lại toàn bộ phản hồi từ API để kiểm tra cấu trúc của nó
+        sessionStorage.setItem('authToken', response.token); // Lưu token vào sessionStorage
   
-        // Store user data directly, as API response is the user data itself
-        localStorage.setItem('userData', JSON.stringify({
+        // Lưu trữ dữ liệu người dùng trực tiếp vào sessionStorage
+        sessionStorage.setItem('userData', JSON.stringify({
           id: response.id,
           name: response.name,
           phone: response.phone,
@@ -33,58 +33,53 @@ export class AuthService {
       map(response => response.token)
     );
   }
-  
 
-  // Logout method to clear token and user data
+  // Phương thức đăng xuất để xóa token và dữ liệu người dùng
   logout(): void {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
-    this.router.navigate(['/login']); // Redirect to login page
+    sessionStorage.removeItem('authToken'); // Xóa token khỏi sessionStorage
+    sessionStorage.removeItem('userData');  // Xóa dữ liệu người dùng khỏi sessionStorage
+    this.router.navigate(['/login']); // Điều hướng đến trang đăng nhập
   }
 
-  // Get user data (Account) from localStorage with error handling
+  // Lấy dữ liệu người dùng (Account) từ sessionStorage với xử lý lỗi
   getUserData(): Account | null {
-    const userData = localStorage.getItem('userData');
+    const userData = sessionStorage.getItem('userData');
     
-    // Check if userData exists and is not set to "undefined" or null
+    // Kiểm tra xem userData có tồn tại và không bị đặt thành "undefined" hoặc null
     if (!userData || userData === "undefined") {
-      return null; // Return null if no valid user data is found
+      return null; // Trả về null nếu không tìm thấy dữ liệu người dùng hợp lệ
     }
   
     try {
-      return JSON.parse(userData) as Account; // Parse and cast to Account
+      return JSON.parse(userData) as Account; // Phân tích cú pháp và ép kiểu thành Account
     } catch (error) {
-      console.error("Error parsing user data from localStorage", error);
-      localStorage.removeItem('userData'); // Clear invalid data from localStorage
-      return null; // Return null on error
+      console.error("Lỗi khi phân tích dữ liệu người dùng từ sessionStorage", error);
+      sessionStorage.removeItem('userData'); // Xóa dữ liệu không hợp lệ khỏi sessionStorage
+      return null; // Trả về null nếu có lỗi
     }
   }
 
-  // Retrieve the user ID from stored user data
+  // Lấy ID của người dùng từ dữ liệu người dùng đã lưu trữ
   getUserId(): string | null {
-    return this.getUserData()?.id || null; // Use optional chaining for simplicity
+    return this.getUserData()?.id || null; // Sử dụng optional chaining cho đơn giản
   }
 
-  // Check if user is logged in based on the presence of a token
+  // Kiểm tra xem người dùng đã đăng nhập chưa dựa trên sự tồn tại của token
   isLoggedIn(): boolean {
-    return this.getToken() !== null; // Returns true if token exists
+    return this.getToken() !== null; // Trả về true nếu token tồn tại
   }
 
-  // Check if the logged-in user has admin privileges
-  // isAdmin(): boolean {
-  //   return this.getUserData()?.admin === true; // Use optional chaining and check admin status
-  // }
-// Check if the logged-in user has admin privileges
-isAdmin(): boolean {
-  const userData = this.getUserData();
-  if (userData && userData.admin !== undefined) {
-    return userData.admin; // Return true if user is an admin
+  // Kiểm tra xem người dùng đã đăng nhập có quyền admin không
+  isAdmin(): boolean {
+    const userData = this.getUserData();
+    if (userData && userData.admin !== undefined) {
+      return userData.admin; // Trả về true nếu người dùng là admin
+    }
+    return false; // Trả về false nếu không có quyền admin
   }
-  return false; // Return false if admin status is not available
-}
 
-  // Retrieve token from localStorage
+  // Lấy token từ sessionStorage
   getToken(): string | null {
-    return localStorage.getItem('authToken'); // Return the token or null
+    return sessionStorage.getItem('authToken'); // Trả về token hoặc null
   }
 }

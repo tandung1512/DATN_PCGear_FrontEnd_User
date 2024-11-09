@@ -9,57 +9,61 @@
            style="width: 7%;">
            PC Gear
     </a>
-    
 
     <!-- Offcanvas menu -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
-
       <div class="offcanvas-body">
         <ul class="navbar-nav flex-grow-1 justify-content-left ms-2">
-          
-
-          
         </ul>
-        <ul class="navbar-nav flex-row-2  justify-content-right">
 
-            <!-- Thanh tìm kiếm -->
-            <form class="d-flex me-3" role="search">
-              <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-              <!-- Sử dụng biểu tượng tìm kiếm -->
-              <button class="btn btn-outline-success" type="submit">
-                <i class="bi bi-search"></i>
-              </button>
-            </form>
-              <!-- Hiển thị nút Login/Register nếu người dùng chưa đăng nhập -->
-              <ng-container *ngIf="!isLoggedIn">
-                <li class="nav-item">
-                  <button class="btn btn-outline-light me-2" (click)="login()">Đăng nhập</button>
-                </li>
-                <li class="nav-item">
-                  <button class="btn btn-outline-light" (click)="register()">Đăng ký</button>
-                </li>
-              </ng-container>
-    
-              <!-- Hiển thị lời chào và nút Logout nếu người dùng đã đăng nhập -->
-              <ng-container *ngIf="isLoggedIn" >
-                <li class="nav-item ">
-                  <span class="nav-link text-light">Xin chào, {{ userName }}</span>
-                </li>
-                <li class="nav-item">
-                  <button class="btn btn-outline-light ms-2" (click)="logout()">Đăng xuất</button>
-                </li>
-             
-              </ng-container>
-              
-    
-          <li class="nav-item  ms-2"> <!-- Using the Bootstrap 'me-2' class for margin-right -->
+        <ul class="navbar-nav flex-row-2 justify-content-right">
+
+          <!-- Thanh tìm kiếm -->
+          <form class="d-flex me-3" role="search">
+            <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">
+              <i class="bi bi-search"></i>
+            </button>
+          </form>
+
+          <!-- Hiển thị nút Login/Register nếu người dùng chưa đăng nhập -->
+          <ng-container *ngIf="!isLoggedIn">
+            <li class="nav-item">
+              <button class="btn btn-outline-light me-2" (click)="login()">Đăng nhập</button>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-outline-light" (click)="register()">Đăng ký</button>
+            </li>
+          </ng-container>
+  
+          <!-- Hiển thị lời chào và nút Logout nếu người dùng đã đăng nhập -->
+          <ng-container *ngIf="isLoggedIn">
+            <li class="nav-item">
+              <span class="nav-link text-light">Xin chào, {{ userName }}</span>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-outline-light ms-2" (click)="logout()">Đăng xuất</button>
+            </li>
+
+            <!-- Hiển thị nút Admin nếu người dùng là Admin -->
+            <ng-container *ngIf="isAdmin">
+              <li class="nav-item">
+                <a class="nav-link text-light" href="/admin">Quản lý</a>
+              </li>
+            </ng-container>
+
+            <!-- Biểu tượng hồ sơ người dùng -->
+            <li class="nav-item ms-2">
+              <a class="nav-link" (click)="goToUserProfile()">
+                <i class="bi bi-person"></i>
+              </a>
+            </li>
+          </ng-container>
+
+          <!-- Biểu tượng giỏ hàng -->
+          <li class="nav-item ms-2">
             <a class="nav-link" href="#">
-              <i class="bi bi-cart"></i> <!-- Biểu tượng giỏ hàng -->
-            </a>
-          </li>
-          <li class="nav-item  ms-2"> <!-- Using the Bootstrap 'me-2' class for margin-right -->
-            <a class="nav-link" (click)="goToUserProfile()"> 
-              <i class="bi bi-person"></i> <!-- Biểu tượng icon hồ sơ -->
+              <i class="bi bi-cart"></i>
             </a>
           </li>
         </ul>

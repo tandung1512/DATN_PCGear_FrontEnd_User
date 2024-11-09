@@ -12,55 +12,51 @@ import { Account } from '../account/account.model';
 })
 export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
-  userName: string = ''; 
+  userName: string = '';
   isAdmin: boolean = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.checkLoginStatus(); // Check login status on component load
+    this.checkLoginStatus(); // Kiểm tra trạng thái đăng nhập khi component được khởi tạo
   }
 
-  // Check login status and update user details
+  // Kiểm tra trạng thái đăng nhập và cập nhật thông tin người dùng
   checkLoginStatus(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
     if (this.isLoggedIn) {
       const userData: Account | null = this.authService.getUserData();
-      console.log("User Data:", userData); // Log entire user data
+      console.log("User Data:", userData); // In ra toàn bộ dữ liệu người dùng
       if (userData) {
         this.userName = userData.name || 'User';
-        console.log("User Name:", this.userName); // Log name or fallback value
+        console.log("User Name:", this.userName); // In ra tên người dùng hoặc tên mặc định
         this.isAdmin = userData.admin;
-        console.log("User is Admin:", this.isAdmin); 
+        console.log("User is Admin:", this.isAdmin);
       }
     }
   }
-  
 
-  // Navigate to Login page
+  // Điều hướng đến trang Login
   login(): void {
     this.router.navigate(['/login']);
   }
 
-  // Navigate to Register page
+  // Điều hướng đến trang Register
   register(): void {
     this.router.navigate(['/register']);
   }
 
-  // Navigate to User Info Update page
-  goToUserProfile() {
+  // Điều hướng đến trang hồ sơ người dùng
+  goToUserProfile(): void {
     this.router.navigate(['/user-info']);
   }
 
-  
-  
-
-  // Logout and clear session data
+  // Đăng xuất và xoá dữ liệu phiên làm việc
   logout(): void {
-    this.authService.logout(); // Clear session with AuthService
+    this.authService.logout(); // Xoá phiên làm việc với AuthService
     this.isLoggedIn = false;
-    this.userName = ''; // Clear user name after logout
-    this.isAdmin = false; // Clear admin status after logout
-    this.router.navigate(['/']); // Redirect to homepage
+    this.userName = ''; // Xoá tên người dùng sau khi đăng xuất
+    this.isAdmin = false; // Xoá quyền admin sau khi đăng xuất
+    this.router.navigate(['/']); // Điều hướng về trang chủ
   }
 }
