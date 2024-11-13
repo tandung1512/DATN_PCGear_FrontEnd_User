@@ -4,6 +4,20 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { Account } from '../account/account.model';
 
+
+interface CartItem {
+  id: number;
+  name: string;
+  image1: string;
+  price: number;
+  qty: number;
+}
+
+interface Cart {
+  count: number;
+  items: CartItem[];
+  amount: number;
+}
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -14,11 +28,45 @@ export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   userName: string = '';
   isAdmin: boolean = false;
+  cartOpen = false;
+  cart: Cart = {
+    count: 0,
+    items: [],
+    amount: 0,
+  };
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService, ) {
+  
+  }
+  loadCartData() {
+    // Giả sử dữ liệu giỏ hàng được lấy từ một API hoặc local storage
+    this.cart = {
+      count: 2,
+      items: [
+        { id: 1, name: 'Sản phẩm A', image1: 'product1.jpg', price: 100000, qty: 1 },
+        { id: 2, name: 'Sản phẩm B', image1: 'product2.jpg', price: 200000, qty: 2 },
+      ],
+      amount: 500000,
+    };
+  }
+
+  toggleCartDropdown() {
+    this.cartOpen = !this.cartOpen;
+  }
+
+  removeItem(itemId: number) {
+    this.cart.items = this.cart.items.filter((item) => item.id !== itemId);
+    this.updateCartCountAndAmount();
+  }
+
+  updateCartCountAndAmount() {
+    this.cart.count = this.cart.items.length;
+    this.cart.amount = this.cart.items.reduce((acc, item) => acc + item.price * item.qty, 0);
+  }
 
   ngOnInit(): void {
     this.checkLoginStatus(); // Kiểm tra trạng thái đăng nhập khi component được khởi tạo
+    this.loadCartData();
   }
 
   // Kiểm tra trạng thái đăng nhập và cập nhật thông tin người dùng

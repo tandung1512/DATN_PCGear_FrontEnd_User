@@ -1,0 +1,93 @@
+<div class="container">
+    <div class="row">
+        <!-- Thông tin giao hàng -->
+        <div class="col-md-7">
+            <h1>CỬA HÀNG PHỤ KIỆN MÁY TÍNH PCGEARHUB</h1>
+            <span>cửa hàng > xác nhận thông tin</span>
+            <h2 style="font-weight: bold;">Thông tin giao hàng :</h2>
+
+            <!-- Thông tin người dùng -->
+            <div class="mb-3" style="margin-top: 20px;">
+                <label for="name">Tên người nhận: </label>
+                <div class="form-control" id="name">{{ userLogged.name }}</div>
+            </div>
+            <div class="mb-3" style="margin-top: 20px;">
+                <label for="phone">Số điện thoại: </label>
+                <div class="form-control" id="phone">{{ userLogged.phone }}</div>
+            </div>
+
+            <!-- Chọn vị trí -->
+            <label for="">Chọn vị trí của bạn: </label>
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <select class="form-select form-control form-select-sm mb-3" id="city" [(ngModel)]="selectedCity">
+                        <option value="" selected>Chọn tỉnh thành</option>
+                        <option *ngFor="let city of cities" [value]="city">{{ city.Name }}</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <select class="form-select form-control form-select-sm mb-3" id="district" [(ngModel)]="selectedDistrict">
+                        <option value="" selected>Chọn quận huyện</option>
+                        <option *ngFor="let district of selectedCity?.Districts" [value]="district">{{ district.Name }}</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <select class="form-select form-control form-select-sm" id="ward" [(ngModel)]="selectedWard">
+                        <option value="" selected>Chọn phường xã</option>
+                        <option *ngFor="let ward of selectedDistrict?.Wards" [value]="ward">{{ ward.Name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3" style="margin-top: 10px;">
+                <label for="address">Nhập địa chỉ cụ thể:</label>
+                <input type="text" class="form-control" id="address" [(ngModel)]="specificAddress" placeholder="Số nhà, tổ,...">
+            </div>
+
+            <!-- Phương thức thanh toán -->
+            <h3 style="font-weight: bold;">Phương thức thanh toán: </h3>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="thanhToanKhiNhanHang" [(ngModel)]="selectedPaymentMethod" value="Thanh toán khi nhận hàng">
+                <label class="form-check-label" for="thanhToanKhiNhanHang">Thanh toán tiền mặt</label>
+            </div>
+
+            <a (click)="confirmOrder()" class="btn btn-primary" style="margin-left: 350px;width: 300px;">Xác nhận đơn hàng</a>
+        </div>
+
+        <!-- Hiển thị sản phẩm đã chọn -->
+        <div class="col-md-5">
+            <div class="row">
+                <div class="col-md-1">
+                    <h3 style="font-weight: bold;">Ảnh</h3>
+                </div>
+                <div class="col-md-4">
+                    <h3 style="font-weight: bold;">Tên sản phẩm</h3>
+                </div>
+                <div class="col-md-4">
+                    <h3 style="font-weight: bold;">Tổng tiền</h3>
+                </div>
+            </div>
+            <hr class="my-4">
+
+            <div class="row" *ngFor="let item of selectedItems">
+                <div class="col-md-2">
+                    <img [src]="'/assets/images/products/' + item.image1" width="80px" height="70px" style="border-radius: 5px;">
+                </div>
+                <div class="col-md-6">
+                    <h6>{{ item.name }}</h6>
+                    <p style="color: red;font-weight: bold;">Giá: {{ item.price | number:0 }} | Số lượng: {{ item.qty }}</p>
+                </div>
+                <div class="col-md-2">
+                    {{ (item.qty * item.price) | number:0 }}
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Tổng tiền: <span style="color: red; font-weight: bold;">{{ getTotalAmountConfirm() | number:0 }} vnđ</span></h2>
+                </div>
+            </div>
+            <a class="btn btn-sm" style="background-color: rgb(98, 95, 95); color: white;" routerLink="/cart">Quay lại giỏ hàng</a>
+        </div>
+    </div>
+</div>
