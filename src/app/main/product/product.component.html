@@ -1,0 +1,34 @@
+<div class="product-list">
+  <h2>Sản phẩm nổi bật</h2>
+  
+  <!-- Hiển thị thông báo lỗi nếu có -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Hiển thị sản phẩm nếu có, nếu không thì hiển thị thông báo -->
+  <div *ngIf="products.length > 0; else noProducts" class="row">
+    <div class="col-md-3" *ngFor="let product of products">
+      <div class="card mb-4">
+        <img [src]="product.image1" alt="{{ product.name }}" class="card-img-top" />
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">{{ product.description }}</p>
+          <p><strong>Giá: {{ product.price | currencyFormat }}</strong></p>
+          <p><strong>Số lượng: {{ product.quantity }}</strong></p>
+          
+          <!-- Thêm nút xem chi tiết và thêm vào giỏ hàng -->
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-primary" (click)="(product.id)">Xem chi tiết</button>
+            <button class="btn btn-success" (click)="(product)">Thêm vào giỏ hàng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mẫu khi không có sản phẩm -->
+  <ng-template #noProducts>
+    <p>Không có sản phẩm nào để hiển thị.</p>
+  </ng-template>
+</div>
