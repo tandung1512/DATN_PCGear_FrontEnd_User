@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [
     ReactiveFormsModule, // Needed for reactive forms
-    CommonModule         // Needed for *ngIf and other common directives
+    CommonModule,         // Needed for *ngIf and other common directives
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
