@@ -1,30 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from './product.service';  // Dịch vụ lấy dữ liệu sản phẩm
-import { Product } from './product.model';  // Mô hình sản phẩm
+import { ProductService } from './product.service';
+import { Product } from './product.model';
 import { CurrencyFormatPipe } from './currency-format.pipe';  // Pipe định dạng tiền tệ
+
 import { CommonModule } from '@angular/common';  // Cần để sử dụng các tính năng chung của Angular
 import { CartService } from '../../services/cart.service';
+
 
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  imports: [CommonModule, CurrencyFormatPipe],  // Đảm bảo Pipe và CommonModule được import đúng
-  standalone: true,  // Đảm bảo component này là standalone
+  imports: [CommonModule, CurrencyFormatPipe],
+  standalone: true,
 })
 export class ProductComponent implements OnInit {
-  products: Product[] = [];  // Mảng sản phẩm
-  errorMessage: string | null = null;  // Biến lỗi nếu có
+  products: Product[] = [];
+  errorMessage: string | null = null;
+
 
   constructor(private productService: ProductService, private cartService: CartService) {}
 
   ngOnInit(): void {
-    this.loadProducts();  // Gọi hàm lấy sản phẩm khi component khởi tạo
+    this.loadProducts();
   }
 
   loadProducts(): void {
     this.productService.getAllProducts().subscribe({
       next: (data) => {
-        this.products = data;  // Gán dữ liệu vào mảng products
+        this.products = data.map(product => ({
+          ...product,
+          image1: this.productService.getProductImageUrl(product.image1 || 'default-image1.jpg'),
+          image2: this.productService.getProductImageUrl(product.image2 || 'default-image2.jpg')
+        }));
       },
       error: (err) => {
         this.errorMessage = 'Không thể tải sản phẩm: ' + err.message;
@@ -33,6 +40,7 @@ export class ProductComponent implements OnInit {
     });
   }
  
+
     // Thêm sản phẩm vào giỏ hàng
     addToCart(productId: string) {
       this.cartService.add(productId);
