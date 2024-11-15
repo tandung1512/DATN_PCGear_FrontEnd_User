@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from '../services/cart.service';
 import { FormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
+import 'bootstrap';  // Import toàn bộ Bootstrap (JS và CSS)
+
 
 @Component({
   selector: 'app-cart',
@@ -10,35 +12,44 @@ import { CommonModule } from '@angular/common';
   standalone: true, 
   imports: [FormsModule,CommonModule],
 })
-export class CartComponent implements OnInit {
-  checkAll: boolean = false;
+export class CartComponent {
+ 
+  checkAll = false;
 
   constructor(public cartService: CartService) {}
 
-  ngOnInit(): void {
-    const sampleItems = [
-      { id: 1, name: 'Sản phẩm A', price: 100000, qty: 2, image1: 'productA.jpg', checked: true, quantity: 5 },
-      { id: 2, name: 'Sản phẩm B', price: 200000, qty: 1, image1: 'productB.jpg', checked: false, quantity: 3 },
-    ];
-
-    // Gán sản phẩm mẫu vào giỏ hàng
-    this.cartService.items = sampleItems;
-  }
-
-  // Kiểm tra xem có sản phẩm nào được chọn không
+  // Để kiểm tra xem có sản phẩm được chọn hay không
   hasCheckedItems(): boolean {
     return this.cartService.items.some(item => item.checked);
   }
 
-  // Chọn hoặc bỏ chọn tất cả sản phẩm trong giỏ
-  checkAllItems(): void {
-    this.cartService.items.forEach(item => item.checked = this.checkAll);
+  // Tính tổng giá trị của các sản phẩm đã chọn
+  getTotalAmount(): number {
+    return this.cartService.items
+      .filter(item => item.checked)
+      .reduce((total, item) => total + item.qty * item.price, 0);
   }
 
-  // Tính tổng số tiền cho các sản phẩm đã chọn
-  getTotalAmount(): number {
-    return this.cartService.items.reduce((total, item) => {
-      return item.checked ? total + item.qty * item.price : total;
-    }, 0);
+  // Hàm xử lý thay đổi trạng thái "Chọn tất cả"
+  checkAllItems() {
+    this.cartService.items.forEach(item => item.checked = this.checkAll);
   }
-}
+ // Hàm xử lý khi nhấn "Xóa tất cả"
+ clearCart() {
+  this.cartService.clear();  // Gọi phương thức clear() của CartService để xóa tất cả sản phẩm
+  this.checkAll = false; 
+
+ }
+   // Xác nhận xóa giỏ hàng
+   confirmClearCart() {
+    this.cartService.clear();  // Gọi phương thức clear() để xóa tất cả sản phẩm
+    this.closeDropdown(); // Đóng dropdown sau khi xóa
+  }
+  closeDropdown() {
+    const dropdown = document.getElementById('dropdownMenuButton');
+    if (dropdown) {
+      // Đóng dropdown bằng cách ẩn nó
+      (dropdown as HTMLElement).click();
+    }
+  }
+  }

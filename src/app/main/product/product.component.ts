@@ -2,8 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from './product.service';
 import { Product } from './product.model';
 import { CurrencyFormatPipe } from './currency-format.pipe';  // Pipe định dạng tiền tệ
+
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; 
+import { CartService } from '../../services/cart.service';
+
+
 
 @Component({
   selector: 'app-product',
@@ -15,7 +19,9 @@ export class ProductComponent implements OnInit {
   products: Product[] = [];
   errorMessage: string | null = null;
 
-  constructor(private productService: ProductService,private router: Router) { }
+
+  constructor(private productService: ProductService,private router: Router,private cartService: CartService) { }
+
 
   ngOnInit(): void {
     this.loadProducts();
@@ -41,8 +47,11 @@ export class ProductComponent implements OnInit {
     this.router.navigate(['/product', productId]);
   }
 
-  addToCart(product: Product): void {
-    console.log('Thêm vào giỏ hàng:', product);
-  }
+  
  
+
+    // Thêm sản phẩm vào giỏ hàng
+    addToCart(productId: string) {
+      this.cartService.add(productId);
+    }
 }

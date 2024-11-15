@@ -60,36 +60,26 @@
             </li>
           </ng-container>
 
-          <div class=" mt-2 ms-2 me-2 position-relative">
+          <div class="mt-2 ms-2 me-2 position-relative">
             <div class="header__cart_hi">
               <li class="hm-minicart">
                 <!-- Trigger Dropdown -->
-                <div class="hm-minicart-trigger " (click)="toggleCartDropdown()">
+                <div class="hm-minicart-trigger" (click)="toggleCartDropdown()">
                   <span class="item-icon">
-                    <i class="bi bi-cart" ></i>
-                    <sup *ngIf="cart.count > 0" class="badge bg-danger position-absolute top-0 start-100 translate-middle cart-item-count ">{{ cart.count }}</sup>
+                    <i class="bi bi-cart"></i>
+                    <!-- Hiển thị số lượng sản phẩm trong giỏ nếu có -->
+                    <sup *ngIf="cartCount > 0" class="badge bg-danger position-absolute top-0 start-100 translate-middle cart-item-count">{{ cartCount }}</sup>
                   </span>
-                  
                 </div>
           
                 <!-- Dropdown Menu -->
-                <div
-                  *ngIf="cartOpen"
-                  class="dropdown-menu show"
-                  style="display: block; width: 300px; right: 0; top: 100%;"
-                >
+                <div *ngIf="cartOpen" class="dropdown-menu show" style="display: block; width: 300px; right: 0; top: 100%;">
                   <div class="modal-body p-3">
-                    <div *ngIf="cart.count > 0; else emptyCart">
+                    <div *ngIf="cartCount > 0; else emptyCart">
                       <div style="max-height: 300px; overflow-y: auto;">
                         <ul class="minicart-product-list list-unstyled">
-                          <li *ngFor="let item of cart.items" class="d-flex mb-3">
-                            <img
-                              [src]="'/assets/images/products/' + item.image1"
-                              width="70px"
-                              height="70px"
-                              class="rounded"
-                              alt="{{ item.name }}"
-                            />
+                          <li *ngFor="let item of cartItems" class="d-flex mb-3">
+                            <img [src]="'/assets/images/products/' + item.image1" width="70px" height="70px" class="rounded" alt="{{ item.name }}" />
                             <div class="minicart-product-details ms-3">
                               <h6>
                                 <!-- <a [routerLink]="['/product', item.id]">
@@ -105,7 +95,7 @@
                         </ul>
                       </div>
                       <p class="minicart-total">
-                        Tổng: <span>{{ cart.amount | number: '1.0-0' }} vnđ</span>
+                        Tổng: <span>{{ cartAmount | number: '1.0-0' }} vnđ</span>
                       </p>
                       <a routerLink="/cart" class="btn btn-primary btn-block mt-3">Xem giỏ hàng</a>
                     </div>
@@ -119,8 +109,6 @@
               </li>
             </div>
           </div>
-          
-          
         </ul>
       </div>
     </div>

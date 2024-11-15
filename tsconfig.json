@@ -13,6 +13,7 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
+    "types": ["node", "bootstrap"],
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
@@ -22,6 +23,7 @@
       "ES2022",
       "dom"
     ]
+    
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

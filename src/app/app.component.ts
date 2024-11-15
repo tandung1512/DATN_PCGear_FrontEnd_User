@@ -7,9 +7,14 @@ import { FooterComponent } from './footer/footer.component';
 import { MainComponent } from './main/main.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 // import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CartService } from './services/cart.service';
+
 import { CartComponent } from './cart/cart.component';
+import { ConfirmOrderComponent } from './cart/confirm-order.component';
 
 import { ProductComponent } from './main/product/product.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -31,6 +36,12 @@ import { ProductDetailComponent } from './main/product/product-detail.component'
     FormsModule,
     ProductDetailComponent,
     CartComponent,
+
+    ConfirmOrderComponent,
+    
+    
+
+
 
   ],
   templateUrl: './app.component.html',  // Hoặc './product.component.html'
