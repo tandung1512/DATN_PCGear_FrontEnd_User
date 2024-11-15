@@ -3,6 +3,7 @@ import { ProductService } from './product.service';  // Dịch vụ lấy dữ l
 import { Product } from './product.model';  // Mô hình sản phẩm
 import { CurrencyFormatPipe } from './currency-format.pipe';  // Pipe định dạng tiền tệ
 import { CommonModule } from '@angular/common';  // Cần để sử dụng các tính năng chung của Angular
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product',
@@ -14,7 +15,7 @@ export class ProductComponent implements OnInit {
   products: Product[] = [];  // Mảng sản phẩm
   errorMessage: string | null = null;  // Biến lỗi nếu có
 
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService, private cartService: CartService) {}
 
   ngOnInit(): void {
     this.loadProducts();  // Gọi hàm lấy sản phẩm khi component khởi tạo
@@ -31,4 +32,9 @@ export class ProductComponent implements OnInit {
       }
     });
   }
+ 
+    // Thêm sản phẩm vào giỏ hàng
+    addToCart(productId: string) {
+      this.cartService.add(productId);
+    }
 }
