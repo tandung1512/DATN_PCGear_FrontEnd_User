@@ -13,6 +13,7 @@ import { CartComponent } from './cart/cart.component';
 
 import { ProductComponent } from './main/product/product.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ProductDetailComponent } from './main/product/product-detail.component';
 
 
 @Component({
@@ -28,7 +29,7 @@ import { HttpClientModule } from '@angular/common/http';
     MainComponent,
     ReactiveFormsModule,
     FormsModule,
-
+    ProductDetailComponent,
     CartComponent,
 
   ],
