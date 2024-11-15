@@ -8,7 +8,6 @@ import { MainComponent } from './main/main.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CartService } from './services/cart.service';
@@ -38,10 +37,6 @@ import { ProductDetailComponent } from './main/product/product-detail.component'
     CartComponent,
 
     ConfirmOrderComponent,
-    
-    
-
-
 
   ],
   templateUrl: './app.component.html',  // Hoặc './product.component.html'

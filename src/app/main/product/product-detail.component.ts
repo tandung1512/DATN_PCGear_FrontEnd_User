@@ -46,12 +46,13 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
+  
   addToCart(product: Product): void {
     console.log('Sản phẩm đã thêm vào giỏ hàng:', product);
     // Logic thêm vào giỏ hàng
   }
 
   goHome(): void {
-    this.router.navigate(['/home']); // Quay lại trang trước
+    this.router.navigate(['/']); // Quay lại trang trước
   }
 }
