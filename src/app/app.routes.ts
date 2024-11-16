@@ -8,6 +8,9 @@ import { CartComponent } from './cart/cart.component';
 import { ProductDetailComponent } from './main/product/product-detail.component';
 
 import { ConfirmOrderComponent } from './cart/confirm-order.component';
+import { OrderComponent } from './order/order.component';
+import { PayComponent } from './pay/pay.component';
+import { AboutComponent } from './about/about.component';
 
 export const routes: Routes = [
   { path: '', component: MainComponent },
@@ -19,5 +22,8 @@ export const routes: Routes = [
   { path: 'product/:id', component: ProductDetailComponent },
 
   { path: 'confirm', component: ConfirmOrderComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'pay', component: PayComponent },
+  { path: 'guide', component: OrderComponent },
 
 ];
