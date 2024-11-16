@@ -26,4 +26,5 @@ export class ProductService {
   getProductImageUrl(imageName: string): string {
     return this.apiService.getImageUrl(imageName);
   }
+  
 }
