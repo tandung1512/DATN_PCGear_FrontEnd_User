@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from '../services/cart.service';
 import { FormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import 'bootstrap';  // Import toàn bộ Bootstrap (JS và CSS)
 
 
@@ -16,7 +17,7 @@ export class CartComponent {
  
   checkAll = false;
 
-  constructor(public cartService: CartService) {}
+  constructor(public cartService: CartService, private router: Router) {}
 
   // Để kiểm tra xem có sản phẩm được chọn hay không
   hasCheckedItems(): boolean {
@@ -50,6 +51,11 @@ export class CartComponent {
     if (dropdown) {
       // Đóng dropdown bằng cách ẩn nó
       (dropdown as HTMLElement).click();
+    }
+  }
+  goToConfirm() {
+    if (this.hasCheckedItems()) {
+      this.router.navigate(['/confirm']);  // Điều hướng đến trang xác nhận thanh toán
     }
   }
   }

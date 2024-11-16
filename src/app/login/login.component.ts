@@ -36,8 +36,12 @@ export class LoginComponent {
       this.authService.login(id, password).subscribe({
         next: (token) => {
           console.log('Login successful, token:', token);
+  
+          // Lưu token vào sessionStorage
+          sessionStorage.setItem('token', token);  // Lưu token vào sessionStorage
+  
+          // Chuyển hướng sau khi đăng nhập thành công
           this.router.navigate(['/']).then(() => {
-
             location.reload(); // Reload the homepage after navigation
           });
         },
@@ -50,4 +54,5 @@ export class LoginComponent {
       this.errorMessage = 'Vui lòng nhập đầy đủ thông tin!';
     }
   }
+  
 }

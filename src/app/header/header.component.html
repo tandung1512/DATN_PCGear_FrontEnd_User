@@ -78,14 +78,10 @@
                     <div *ngIf="cartCount > 0; else emptyCart">
                       <div style="max-height: 300px; overflow-y: auto;">
                         <ul class="minicart-product-list list-unstyled">
-                          <li *ngFor="let item of cartItems" class="d-flex mb-3">
-                            <img [src]="'/assets/images/products/' + item.image1" width="70px" height="70px" class="rounded" alt="{{ item.name }}" />
+                          <li *ngFor="let item of cartService.items"class="d-flex mb-3">
+                            <img [src]="item.imageUrl" alt="Product Image" width="70px" height="70px" class="rounded" />
                             <div class="minicart-product-details ms-3">
-                              <h6>
-                                <!-- <a [routerLink]="['/product', item.id]">
-                                  {{ item.name.length > 28 ? (item.name | slice: 0:28) + '...' : item.name }}
-                                </a> -->
-                              </h6>
+                              
                               <p class="text-danger fw-bold mt-1">
                                 {{ item.price | number: '1.0-0' }} vnđ x {{ item.qty }}
                               </p>
@@ -97,7 +93,7 @@
                       <p class="minicart-total">
                         Tổng: <span>{{ cartAmount | number: '1.0-0' }} vnđ</span>
                       </p>
-                      <a routerLink="/cart" class="btn btn-primary btn-block mt-3">Xem giỏ hàng</a>
+                      <button class="btn btn-primary btn-block mt-3" (click)="ToCart()">Xem giỏ hàng</button>
                     </div>
           
                     <!-- Hiển thị khi giỏ hàng trống -->

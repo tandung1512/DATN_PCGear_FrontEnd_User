@@ -1,17 +1,20 @@
 <!-- shopping-cart.component.html -->
-<div class="container py-5">
+<div class="container ">
+  <div class="mb-4">
+  <h3 class="font-weight-bold md-3">Giỏ hàng của bạn</h3> </div>
   <div class="row">
     <div class="col-12">
       <div class="card" style="border-radius: 15px;">
         <div class="card-body">
+          
           <!-- Tiêu đề giỏ hàng và số lượng sản phẩm -->
-          <div class="d-flex justify-content-between align-items-center mb-5">
-            <h3 class="font-weight-bold">Giỏ hàng của bạn</h3>
-            <h4 *ngIf="cartService.count > 0" class="text-muted">
+
+            
+            <h5 *ngIf="cartService.count > 0" class="text-muted ">
               Bạn đang có {{ cartService.count }} sản phẩm trong giỏ hàng
-            </h4>
+            </h5>
             <span id="error-message" class="text-danger font-weight-bold"></span>
-          </div>
+         
 
           <!-- Tùy chọn "Chọn tất cả" và Dropdown xóa sản phẩm -->
           <div *ngIf="cartService.count > 0" class="row mb-3">
@@ -22,9 +25,9 @@
             <div class="col-md-3 text-end">
               <!-- Dropdown thay thế cho "Xóa tất cả" -->
               <div class="dropdown">
-                <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <!-- <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                   Hành động
-                </button>
+                </button> -->
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <li>
                     <button class="dropdown-item" (click)="confirmClearCart()">Xóa tất cả</button>
@@ -35,47 +38,72 @@
           </div>
 
           <!-- Danh sách sản phẩm trong giỏ hàng -->
-          <div *ngFor="let item of cartService.items; let i = index" class="row mb-4">
-            <div class="col-md-1">
-              <input type="checkbox" [(ngModel)]="item.checked">
+          <div *ngIf="cartService.count > 0; else noItems">
+            <!-- Danh mục tiêu đề -->
+            <div class="row mb-3 text-uppercase fw-bold ">
+              <div class="col-md-1">Chọn</div>
+              <div class="col-md-2"></div>
+              <div class="col-md-3">Tên sản phẩm</div>
+              <div class="col-md-3 text-center">Số lượng</div>
+              <div class="col-md-2 " >Thành tiền</div>
+              <div class="col-md-1"></div>
             </div>
-            <div class="col-md-2">
-              <img [src]="cartService.url(item.image1)" width="90" height="70" alt="Product Image">
-            </div>
-            <div class="col-md-3">
-              <h6>{{ item.name }}</h6>
-              <p class="text-danger">Giá: {{ item.price | number }} VNĐ</p>
-            </div>
-            <div class="col-md-3 d-flex">
-              <button class="btn btn-link" (click)="cartService.decreaseQuantity(item)">-</button>
-              <input type="number" [(ngModel)]="item.qty" [min]="1" [max]="item.quantity" class="form-control" readonly>
-              <button class="btn btn-link" (click)="cartService.increaseQuantity(item)">+</button>
-            </div>
-            <div class="col-md-2">
-              <h6>{{ (item.qty * item.price) | number }} VNĐ</h6>
-            </div>
-            <div class="col-md-1 text-end">
-              <button (click)="cartService.remove(item.id)" class="btn btn-danger">X</button>
+          
+            <!-- Danh sách các sản phẩm trong giỏ hàng -->
+            <div *ngFor="let item of cartService.items; let i = index" class="row mb-4 mt-4">
+              <div class="col-md-1">
+                <!-- Checkbox chọn sản phẩm -->
+                <input type="checkbox" [(ngModel)]="item.checked" />
+              </div>
+              <div class="col-md-2">
+                <!-- Hình ảnh sản phẩm -->
+                <img [src]="item.imageUrl" alt="Product Image" width="90" height="70" class="rounded" />
+              </div>
+              <div class="col-md-3">
+                <!-- Tên sản phẩm -->
+                <h6>{{ item.name }}</h6>
+                <p class="text-danger">Giá: {{ item.price | number }} VNĐ</p>
+              </div>
+              <div class="col-md-3 d-flex align-items-center">
+                <!-- Các nút tăng giảm số lượng -->
+                <button class="btn btn-link" (click)="cartService.decreaseQuantity(item)">-</button>
+                <input type="number" [(ngModel)]="item.qty" [min]="1" [max]="item.quantity" class="form-control text-center" readonly />
+                <button class="btn btn-link" (click)="cartService.increaseQuantity(item)">+</button>
+              </div>
+              <div class="col-md-2">
+                <!-- Hiển thị tổng tiền của sản phẩm -->
+                <h6>{{ (item.qty * item.price) | number }} VNĐ</h6>
+              </div>
+              <div class="col-md-1 text-end">
+                <!-- Nút xóa sản phẩm khỏi giỏ -->
+                <button (click)="cartService.remove(item.id)" class="btn btn-danger">X</button>
+              </div>
             </div>
           </div>
-
-          <!-- Thông báo khi giỏ hàng trống -->
-          <div *ngIf="cartService.count === 0" class="text-center">
-            <p>Bạn chưa có sản phẩm nào trong giỏ hàng!</p>
-          </div>
+          
+          <ng-template #noItems>
+            <!-- Thông báo khi giỏ hàng trống -->
+            <div class="text-center text-muted mt-4">
+              <p>Bạn chưa có sản phẩm nào trong giỏ hàng!</p>
+            </div>
+          </ng-template>
+          
+            
 
           <hr>
-
+        </div>
           <!-- Tổng tiền và nút Thanh toán -->
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end ">
             <div class="me-3">
               <h6 class="fs-4">Tổng tiền: {{ getTotalAmount() | number }} VNĐ</h6>
-              <button routerLink="/comfirm"  class="btn btn-primary" [disabled]="!hasCheckedItems()">Thanh toán</button>
+              <button class="btn btn-primary float-center" (click)="goToConfirm()" [disabled]="!hasCheckedItems()">Thanh toán</button>
+
             </div>
           </div>
 
-        </div>
+        
       </div>
     </div>
   </div>
 </div>
+

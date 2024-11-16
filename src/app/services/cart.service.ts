@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,15 +11,12 @@ export class CartService {
   private storageKey = 'cart';  // Khóa lưu giỏ hàng trong localStorage
   private baseUrl = 'http://localhost:8080/api';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private apiservice: ApiService) {
     this.loadFromLocalStorage();  // Tải giỏ hàng từ localStorage khi khởi tạo
   }
 
-  // Lấy URL hình ảnh
-  url(filename: string): string {
-    return `${this.baseUrl}/files/images/${filename}`;
-  }
-
+  
+  
   getProduct(id: string): Observable<any> {
     return this.http.get<any>(`http://localhost:8080/api/products/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -37,6 +35,7 @@ export class CartService {
       this.getProduct(id).subscribe(
         (product) => {
           product.qty = 1; // Mặc định số lượng là 1 khi thêm mới sản phẩm
+          product.imageUrl = this.apiservice.getImageUrl(product.image1);
           this.items.push(product);
           this.saveToLocalStorage();
           

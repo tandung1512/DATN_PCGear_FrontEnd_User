@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router, 
     private authService: AuthService, 
-    private cartService: CartService
+    public cartService: CartService
   ) {}
 
   
@@ -34,7 +34,10 @@ export class HeaderComponent implements OnInit {
   get cartAmount(): number {
     return this.cartService.amount;
   }
-  
+  ToCart() {
+    this.cartOpen = false; 
+    this.router.navigate(['/cart']);
+  }
 
   toggleCartDropdown() {
     this.cartOpen = !this.cartOpen;
