@@ -4,23 +4,30 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { Account } from '../account/account.model';
 import { CartService } from '../services/cart.service';
+import { ProductService } from '../main/product/product.service';
+import { Product } from '../main/product/product.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   templateUrl: './header.component.html',
-  imports: [CommonModule],
+  imports: [CommonModule, 
+    FormsModule],
 })
 export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   userName: string = '';
   isAdmin: boolean = false;
   cartOpen = false;
+  searchTerm: string = '';
+  products: Product[] = [];
  
   constructor(
     private router: Router, 
     private authService: AuthService, 
-    public cartService: CartService
+    public cartService: CartService,
+    private productService: ProductService,
   ) {}
 
   
@@ -87,4 +94,13 @@ export class HeaderComponent implements OnInit {
     this.isAdmin = false;
     this.router.navigate(['/']);
   }
+
+  onSearch(): void {
+    this.router.navigate(['/search'], { queryParams: { searchTerm: this.searchTerm } });
+  }
+  
+  navigateToAbout() {
+    this.router.navigate(['/about']);  // Điều hướng đến trang Giới thiệu
+  }
+
 }

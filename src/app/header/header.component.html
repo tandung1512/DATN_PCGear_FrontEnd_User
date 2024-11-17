@@ -8,20 +8,21 @@
            class="img-fluidn ms-5"
            style="width: 7%;">
            PC Gear
+           
     </a>
-
+    <h5><strong (click)="navigateToAbout()" class="text-white" style="cursor: pointer;">Giới thiệu</strong></h5>
     <!-- Offcanvas menu -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
       <div class="offcanvas-body">
         <ul class="navbar-nav flex-grow-1 justify-content-left ms-2">
         </ul>
-
+        
         <ul class="navbar-nav flex-row-2 justify-content-right">
 
           <!-- Thanh tìm kiếm -->
           <form class="d-flex me-3" role="search">
-            <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">
+            <input class="form-control me-2" name="searchTerm" [(ngModel)]="searchTerm" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <button (click)="onSearch()" class="btn btn-outline-success" type="submit">
               <i class="bi bi-search"></i>
             </button>
           </form>

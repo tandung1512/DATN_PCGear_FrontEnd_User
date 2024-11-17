@@ -11,6 +11,7 @@ import { ConfirmOrderComponent } from './cart/confirm-order.component';
 import { OrderComponent } from './order/order.component';
 import { PayComponent } from './pay/pay.component';
 import { AboutComponent } from './about/about.component';
+import { ProductSearchComponent } from './main/product/product-search.component';
 
 export const routes: Routes = [
   { path: '', component: MainComponent },
@@ -25,5 +26,5 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'pay', component: PayComponent },
   { path: 'guide', component: OrderComponent },
-
+  { path: 'search', component: ProductSearchComponent },
 ];

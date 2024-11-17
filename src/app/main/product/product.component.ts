@@ -18,9 +18,10 @@ import { CartService } from '../../services/cart.service';
 export class ProductComponent implements OnInit {
   products: Product[] = [];
   errorMessage: string | null = null;
+  searchTerm: string = '';
 
 
-  constructor(private productService: ProductService,private router: Router,private cartService: CartService) { }
+  constructor(private productService: ProductService, private router: Router,private cartService: CartService) { }
 
 
   ngOnInit(): void {
@@ -47,11 +48,10 @@ export class ProductComponent implements OnInit {
     this.router.navigate(['/product', productId]);
   }
 
-  
- 
-
     // Thêm sản phẩm vào giỏ hàng
     addToCart(productId: string) {
       this.cartService.add(productId);
     }
+
+   
 }

@@ -4,13 +4,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product } from './product.model';
 import { ApiService } from '../../services/api.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  constructor(private apiService: ApiService) {}
+  private baseUrl = 'http://localhost:8080/api/products';
+
+  constructor(private apiService: ApiService, private http: HttpClient) {}
 
   // Lấy tất cả sản phẩm
   getAllProducts(): Observable<Product[]> {
@@ -27,4 +30,7 @@ export class ProductService {
     return this.apiService.getImageUrl(imageName);
   }
   
+  searchProducts(name: string): Observable<Product[]> {
+    return this.http.get<any>(`${this.baseUrl}/search?name=${encodeURIComponent(name)}`);
+  }
 }
