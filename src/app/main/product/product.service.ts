@@ -33,4 +33,9 @@ export class ProductService {
   searchProducts(name: string): Observable<Product[]> {
     return this.http.get<any>(`${this.baseUrl}/search?name=${encodeURIComponent(name)}`);
   }
+
+   // Lấy tất cả sản phẩm nổi bật (isHot = true)
+   getHotProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.baseUrl}/hot`);
+  }
 }

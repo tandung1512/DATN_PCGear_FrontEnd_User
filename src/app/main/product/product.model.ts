@@ -7,6 +7,7 @@ export interface Product {
     status: string;
     image1: string;
     image2: string;
+    isHot: boolean;
     category: any;  // Tùy thuộc vào cấu trúc của Category
     distinctives: any[];  // Tùy thuộc vào cấu trúc của Distinctive
   }
