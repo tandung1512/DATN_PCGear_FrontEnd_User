@@ -1,25 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from './product.service';
 import { Product } from './product.model';
+import { CartService } from '../../services/cart.service';
 import { CurrencyFormatPipe } from './currency-format.pipe'; // Pipe định dạng tiền tệ
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // Import CKEditor
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
-  imports: [CommonModule, CurrencyFormatPipe], // Đăng ký các module và pipe cần thiết
-  standalone: true,
+  imports: [CommonModule, CurrencyFormatPipe, CKEditorModule, FormsModule], // Đăng ký các module và pipe cần thiết
+  standalone: true, // Đánh dấu component là standalone
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, AfterViewInit {
+  @ViewChild('editor', { static: false }) editorElement!: ElementRef; // Thêm @ViewChild để tham chiếu tới phần tử CKEditor trong template
+
   product: Product | null = null; // Lưu thông tin sản phẩm
   errorMessage: string | null = null; // Thông báo lỗi (nếu có)
+
+  public Editor = ClassicEditor; // Sử dụng CKEditor đã nhập
+
+// CKEditor configuration
+public editorConfig = {
+  toolbar: [],  // Ẩn toolbar
+  language: 'en',
+  readOnly: true,  // Đảm bảo CKEditor hoạt động ở chế độ chỉ đọc
+};
 
   constructor(
     private route: ActivatedRoute, // Để lấy thông tin ID từ URL
     private productService: ProductService, // Dịch vụ sản phẩm
-    private router: Router,
+    private router: Router, // Để điều hướng
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -31,6 +47,20 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit(): void {
+    // Khởi tạo CKEditor sau khi view đã được khởi tạo
+    if (this.editorElement) {
+      this.Editor.create(this.editorElement.nativeElement, this.editorConfig)
+        .then(editor => {
+          editor.isReadOnly = true; // Đảm bảo CKEditor ở chế độ chỉ đọc
+        })
+        .catch(error => {
+          console.error('Có lỗi khi khởi tạo CKEditor:', error);
+        });
+    }
+  }
+
+  // Hàm tải sản phẩm từ dịch vụ
   loadProduct(id: string): void {
     this.productService.getProductById(id).subscribe({
       next: (data) => {
@@ -46,13 +76,13 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-  
-  addToCart(product: Product): void {
-    console.log('Sản phẩm đã thêm vào giỏ hàng:', product);
-    // Logic thêm vào giỏ hàng
+  // Thêm sản phẩm vào giỏ hàng
+  addToCart(productId: string) {
+    this.cartService.add(productId);
   }
 
+  // Quay lại trang chủ
   goHome(): void {
-    this.router.navigate(['/']); // Quay lại trang trước
+    this.router.navigate(['/']); // Quay lại trang chủ
   }
 }

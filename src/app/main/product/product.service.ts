@@ -22,7 +22,8 @@ export class ProductService {
 
   // Lấy sản phẩm theo ID
   getProductById(id: string): Observable<Product> {
-    return this.apiService.get<Product>(`products/${id}`);
+    // return this.apiService.get<Product>(`products/${id}`);
+    return this.http.get<Product>(`${this.baseUrl}/get/${id}`);
   }
 
   // Lấy URL của ảnh sản phẩm

@@ -6,6 +6,8 @@ import { CurrencyFormatPipe } from './currency-format.pipe';  // Pipe định d�
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; 
 import { CartService } from '../../services/cart.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic'; 
+
 
 @Component({
   selector: 'app-product',
@@ -17,6 +19,26 @@ export class ProductComponent implements OnInit {
   products: Product[] = [];
   errorMessage: string | null = null;
   searchTerm: string = '';
+
+  public Editor = ClassicEditor; 
+
+  // CKEditor configuration
+  public editorConfig = {
+    toolbar: [
+      'bold', 'italic', 'underline', 'strikethrough', 'link', 
+      'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', 
+      'insertTable', 'mediaEmbed', 'code', 'fontSize', 'fontColor', 
+      'fontBackgroundColor', 'alignment', 'indent', 'outdent'
+    ],
+    language: 'en',
+    image: {
+      toolbar: ['imageTextAlternative', 'imageStyle:full', 'imageStyle:side', 'linkImage']
+    },
+    table: {
+      contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+    },
+    removePlugins: ['ImageResize', 'EasyImage']
+  };
 
   constructor(
     private productService: ProductService, 

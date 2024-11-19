@@ -18,6 +18,8 @@ import { ConfirmOrderComponent } from './cart/confirm-order.component';
 import { ProductComponent } from './main/product/product.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ProductDetailComponent } from './main/product/product-detail.component';
+import { CategoryComponent } from './main/category/category.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
 @Component({
@@ -35,8 +37,9 @@ import { ProductDetailComponent } from './main/product/product-detail.component'
     FormsModule,
     ProductDetailComponent,
     CartComponent,
-
+    CategoryComponent,
     ConfirmOrderComponent,
+    CKEditorModule,
 
   ],
   templateUrl: './app.component.html',  // Hoặc './product.component.html'

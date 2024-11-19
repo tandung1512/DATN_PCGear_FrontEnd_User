@@ -1,0 +1,54 @@
+<div class="hot-categories">
+    <h2>Các Danh Mục Nổi Bật</h2>
+  
+    <!-- Hiển thị thông báo lỗi nếu có -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  
+    <!-- Hiển thị các danh mục nổi bật -->
+    <div class="row">
+      <div *ngFor="let category of categories" class="col-md-12 mb-4">
+        <div class="category-card">
+          <h3 class="category-title">{{ category.name }}</h3>
+  
+          <!-- Kiểm tra nếu danh mục có sản phẩm nổi bật -->
+          <div *ngIf="getHotProducts(category).length > 0" class="product-list">
+            <div class="row">
+              <!-- Hiển thị các sản phẩm nổi bật trong danh mục -->
+              <div *ngFor="let product of getHotProducts(category)" class="col-md-3 mb-4">
+                <div class="card">
+                  <div class="product-images">
+                    <!-- Hiển thị ảnh sản phẩm -->
+                    <img 
+                      [src]="product.image1 || 'assets/default-image.jpg'" 
+                      alt="{{ product.name }}" 
+                      class="card-img-top" 
+                      style="max-height: 200px; object-fit: cover;" />
+                  </div>
+  
+                  <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <!-- Hiển thị giá sản phẩm -->
+                    <p><strong>Giá: {{ product.price | currencyFormat }}</strong></p>
+                    <!-- Hiển thị thông tin sản phẩm nổi bật -->
+                    <p *ngIf="product.isHot" class="badge bg-danger">Sản phẩm nổi bật</p>
+  
+                    <!-- Nút xem chi tiết -->
+                    <div class="d-flex justify-content-between mt-3">
+                      <button class="btn btn-primary" (click)="viewProductDetails(product.id)">Xem chi tiết</button>
+                      <button class="btn btn-success" (click)="addToCart(product.id)">Thêm vào giỏ hàng</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Thông báo nếu không có sản phẩm nổi bật -->
+          <p *ngIf="getHotProducts(category).length === 0">Không có sản phẩm nổi bật</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
