@@ -20,6 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProductDetailComponent } from './main/product/product-detail.component';
 import { CategoryComponent } from './main/category/category.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { CategoryDetailComponent } from './main/category/category-detail.component';
 
 
 @Component({
@@ -40,6 +41,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     CategoryComponent,
     ConfirmOrderComponent,
     CKEditorModule,
+    CategoryDetailComponent,
 
   ],
   templateUrl: './app.component.html',  // Hoặc './product.component.html'

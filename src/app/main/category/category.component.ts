@@ -47,6 +47,7 @@ export class CategoryComponent implements OnInit {
       }
     });
   }
+  
 
   // Lọc các sản phẩm nổi bật trong danh mục
   getHotProducts(category: Category): Product[] {

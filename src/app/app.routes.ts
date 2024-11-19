@@ -13,15 +13,18 @@ import { PayComponent } from './pay/pay.component';
 import { AboutComponent } from './about/about.component';
 import { ProductSearchComponent } from './main/product/product-search.component';
 import { CategoryComponent } from './main/category/category.component';
+import { CategoryDetailComponent } from './main/category/category-detail.component';
+
 
 export const routes: Routes = [
   { path: '', component: MainComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'register',component: RegisterComponent},
+  { path: 'register', component: RegisterComponent },
   { path: 'user-info', component: UserInfoComponent },
   { path: 'cart', component: CartComponent },
-  { path: 'category',component: CategoryComponent},
+  { path: 'category', component: CategoryComponent },
   { path: 'product/:id', component: ProductDetailComponent },
+  { path: 'category/:id', component: CategoryDetailComponent },
 
 
   { path: 'confirm', component: ConfirmOrderComponent },

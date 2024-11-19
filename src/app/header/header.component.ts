@@ -7,12 +7,15 @@ import { CartService } from '../services/cart.service';
 import { ProductService } from '../main/product/product.service';
 import { Product } from '../main/product/product.model';
 import { FormsModule } from '@angular/forms';
+import { CategoryService } from '../main/category/category.service';
+import { Category } from '../main/category/category.model';
+
 
 @Component({
   selector: 'app-header',
   standalone: true,
   templateUrl: './header.component.html',
-  imports: [CommonModule, 
+  imports: [CommonModule,
     FormsModule],
 })
 export class HeaderComponent implements OnInit {
@@ -22,15 +25,18 @@ export class HeaderComponent implements OnInit {
   cartOpen = false;
   searchTerm: string = '';
   products: Product[] = [];
- 
+  categories: Category[] = [];  // Định nghĩa allCategories
+  errorMessage: string | null = null;
+
   constructor(
-    private router: Router, 
-    private authService: AuthService, 
+    private router: Router,
+    private authService: AuthService,
     public cartService: CartService,
     private productService: ProductService,
-  ) {}
+    private categoryService: CategoryService
+  ) { }
 
-  
+
   // Lấy số lượng sản phẩm trong giỏ hàng từ CartService
   get cartCount(): number {
     return this.cartService.count; // Lấy số lượng sản phẩm từ CartService
@@ -42,7 +48,7 @@ export class HeaderComponent implements OnInit {
     return this.cartService.amount;
   }
   ToCart() {
-    this.cartOpen = false; 
+    this.cartOpen = false;
     this.router.navigate(['/cart']);
   }
 
@@ -53,10 +59,11 @@ export class HeaderComponent implements OnInit {
   removeItem(itemId: string) {
     this.cartService.remove(itemId);
   }
-  
+
 
   ngOnInit(): void {
     this.checkLoginStatus(); // Kiểm tra trạng thái đăng nhập khi component được khởi tạo
+    this.loadCategories();
   }
 
   // Kiểm tra trạng thái đăng nhập và cập nhật thông tin người dùng
@@ -98,9 +105,27 @@ export class HeaderComponent implements OnInit {
   onSearch(): void {
     this.router.navigate(['/search'], { queryParams: { searchTerm: this.searchTerm } });
   }
-  
+
   navigateToAbout() {
     this.router.navigate(['/about']);  // Điều hướng đến trang Giới thiệu
   }
 
+  loadCategories(): void {
+    this.categoryService.getAllCategories().subscribe({
+      next: (data) => {
+        this.categories = data; // Lưu danh mục vào biến categories
+      },
+      error: (err) => {
+        this.errorMessage = 'Không thể tải danh mục!';
+        console.error('Error loading categories', err);
+      }
+    });
+  }
+
+  // Điều hướng đến trang danh mục
+  goToCategory(categoryId: string ,event: MouseEvent): void {
+    event.preventDefault();
+    this.router.navigate([`/category/${categoryId}`]);  // Điều hướng đến trang danh mục
+  }
+  
 }
