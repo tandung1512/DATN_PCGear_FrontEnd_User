@@ -8,6 +8,7 @@ import { CartComponent } from './cart/cart.component';
 import { ProductDetailComponent } from './main/product/product-detail.component';
 
 import { ConfirmOrderComponent } from './cart/confirm-order.component';
+import { OrderSuccessComponent } from './cart/order-success.component';
 
 export const routes: Routes = [
   { path: '', component: MainComponent },
@@ -19,5 +20,6 @@ export const routes: Routes = [
   { path: 'product/:id', component: ProductDetailComponent },
 
   { path: 'confirm', component: ConfirmOrderComponent },
+  { path: 'order-success', component: OrderSuccessComponent },
 
 ];

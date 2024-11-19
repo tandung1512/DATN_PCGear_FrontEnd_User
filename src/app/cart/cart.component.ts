@@ -55,7 +55,17 @@ export class CartComponent {
   }
   goToConfirm() {
     if (this.hasCheckedItems()) {
-      this.router.navigate(['/confirm']);  // Điều hướng đến trang xác nhận thanh toán
+      const checkedItems = this.cartService.items.filter(item => item.checked);
+      console.log('Checked Items:', checkedItems);
+  
+      // Lưu các sản phẩm đã chọn vào localStorage
+      localStorage.setItem('selectedItems', JSON.stringify(checkedItems));
+      this.router.navigate(['/confirm']);
     }
   }
+  
+  
+  
+  
+  
   }

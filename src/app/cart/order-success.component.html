@@ -1,0 +1,11 @@
+<div class="container">
+    <h2 class="text-success">Chúc mừng! Đơn hàng của bạn đã được xác nhận thành công.</h2>
+    <p class="lead">Cảm ơn bạn đã đặt hàng với chúng tôi!</p>
+  
+    <div *ngIf="orderId">
+      <p>Đơn hàng của bạn có mã ID: <strong>{{ orderId }}</strong></p>
+    </div>
+  
+    <button class="btn btn-primary" (click)="goToHomePage()">Về trang chủ</button>
+  </div>
+  

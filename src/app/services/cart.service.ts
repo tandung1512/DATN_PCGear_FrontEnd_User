@@ -116,4 +116,7 @@ export class CartService {
       this.saveToLocalStorage();
     }
   }
+  getCheckedItems() {
+    return this.items.filter(item => item.checked);
+  }
 }

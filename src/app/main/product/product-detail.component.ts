@@ -5,6 +5,7 @@ import { Product } from './product.model';
 import { CurrencyFormatPipe } from './currency-format.pipe'; // Pipe định dạng tiền tệ
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -20,6 +21,7 @@ export class ProductDetailComponent implements OnInit {
     private route: ActivatedRoute, // Để lấy thông tin ID từ URL
     private productService: ProductService, // Dịch vụ sản phẩm
     private router: Router,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -46,11 +48,10 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-  
-  addToCart(product: Product): void {
-    console.log('Sản phẩm đã thêm vào giỏ hàng:', product);
-    // Logic thêm vào giỏ hàng
-  }
+ // Thêm sản phẩm vào giỏ hàng
+ addToCart(productId: string) {
+  this.cartService.add(productId);
+}
 
   goHome(): void {
     this.router.navigate(['/']); // Quay lại trang trước
