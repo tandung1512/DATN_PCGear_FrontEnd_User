@@ -19,6 +19,9 @@ import { OrderSuccessComponent } from './cart/order-success.component';
 import { ProductComponent } from './main/product/product.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ProductDetailComponent } from './main/product/product-detail.component';
+import { CategoryComponent } from './main/category/category.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { CategoryDetailComponent } from './main/category/category-detail.component';
 
 
 @Component({
@@ -36,9 +39,13 @@ import { ProductDetailComponent } from './main/product/product-detail.component'
     FormsModule,
     ProductDetailComponent,
     CartComponent,
-
+    CategoryComponent,
     ConfirmOrderComponent,
+
     OrderSuccessComponent,
+    CKEditorModule,
+    CategoryDetailComponent,
+
 
   ],
   templateUrl: './app.component.html',  // Hoặc './product.component.html'

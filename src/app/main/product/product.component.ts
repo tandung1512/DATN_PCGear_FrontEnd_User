@@ -6,7 +6,7 @@ import { CurrencyFormatPipe } from './currency-format.pipe';  // Pipe định d�
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; 
 import { CartService } from '../../services/cart.service';
-
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic'; 
 
 
 @Component({
@@ -18,17 +18,40 @@ import { CartService } from '../../services/cart.service';
 export class ProductComponent implements OnInit {
   products: Product[] = [];
   errorMessage: string | null = null;
+  searchTerm: string = '';
 
+  public Editor = ClassicEditor; 
 
-  constructor(private productService: ProductService,private router: Router,private cartService: CartService) { }
+  // CKEditor configuration
+  public editorConfig = {
+    toolbar: [
+      'bold', 'italic', 'underline', 'strikethrough', 'link', 
+      'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', 
+      'insertTable', 'mediaEmbed', 'code', 'fontSize', 'fontColor', 
+      'fontBackgroundColor', 'alignment', 'indent', 'outdent'
+    ],
+    language: 'en',
+    image: {
+      toolbar: ['imageTextAlternative', 'imageStyle:full', 'imageStyle:side', 'linkImage']
+    },
+    table: {
+      contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+    },
+    removePlugins: ['ImageResize', 'EasyImage']
+  };
 
+  constructor(
+    private productService: ProductService, 
+    private router: Router,
+    private cartService: CartService
+  ) {}
 
   ngOnInit(): void {
-    this.loadProducts();
+    this.loadHotProducts();
   }
 
-  loadProducts(): void {
-    this.productService.getAllProducts().subscribe({
+  loadHotProducts(): void {
+    this.productService.getHotProducts().subscribe({
       next: (data) => {
         this.products = data.map(product => ({
           ...product,
@@ -37,21 +60,19 @@ export class ProductComponent implements OnInit {
         }));
       },
       error: (err) => {
-        this.errorMessage = 'Không thể tải sản phẩm: ' + err.message;
-        console.error('Error loading products', err);
+        this.errorMessage = 'Không thể tải sản phẩm nổi bật: ' + err.message;
+        console.error('Error loading hot products', err);
       }
     });
   }
+
   viewProductDetails(productId: string): void {
     // Điều hướng đến trang chi tiết sản phẩm với id
     this.router.navigate(['/product', productId]);
   }
 
-  
- 
-
-    // Thêm sản phẩm vào giỏ hàng
-    addToCart(productId: string) {
-      this.cartService.add(productId);
-    }
+  // Thêm sản phẩm vào giỏ hàng
+  addToCart(productId: string) {
+    this.cartService.add(productId);
+  }
 }

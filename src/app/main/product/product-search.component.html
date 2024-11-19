@@ -1,0 +1,25 @@
+<div *ngIf="products.length > 0;" class="row">
+  <div class="col-md-3" *ngFor="let product of products">
+    <div class="card mb-4">
+      <!-- Hiển thị 2 ảnh sản phẩm -->
+      <div class="product-images">
+        <img [src]="product.image1 || 'assets/default-image.jpg'" alt="Image 1 of {{ product.name }}"
+          class="product-image img-fluid mx-auto d-block" style="max-height: 200px; object-fit: cover;" />
+        <!-- <img [src]="product.image2 || 'assets/default-image.jpg'" alt="Image 2 of {{ product.name }}" class="product-image img-fluid mx-auto d-block" style="max-height: 200px; object-fit: cover;" /> -->
+      </div>
+
+      <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <!-- <p class="card-text">{{ product.description }}</p> -->
+        <p><strong>Giá: {{ product.price | currencyFormat }}</strong></p>
+        <p><strong>Số lượng: {{ product.quantity }}</strong></p>
+
+        <!-- Thêm nút xem chi tiết và thêm vào giỏ hàng -->
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-primary" (click)="viewProductDetails(product.id)">Xem chi tiết</button>
+          <button class="btn btn-success" (click)="addToCart(product.id)">Thêm vào giỏ hàng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

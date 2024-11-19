@@ -1,0 +1,88 @@
+/* Section tổng thể */
+#order {
+    background-color: #f9f9f9;
+    padding: 3rem 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  /* Tiêu đề chính */
+  #order h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    color: #007bff; /* Màu chủ đạo */
+  }
+  
+  /* Tiêu đề phụ */
+  #order h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #0056b3;
+    margin-bottom: 1.2rem;
+  }
+  
+  /* Tiêu đề cấp 3 */
+  #order h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    color: #333;
+  }
+  
+  /* Đoạn văn bản */
+  #order p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    color: #555;
+  }
+  
+  /* Đoạn văn bản in đậm và in nghiêng */
+  #order i strong {
+    font-size: 1.1rem;
+    color: #d9534f; /* Màu nổi bật */
+  }
+  
+  /* Đoạn văn in nghiêng */
+  #order i {
+    color: #6c757d;
+  }
+  
+  /* Bảng */
+  #order table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  #order th, #order td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    font-size: 1rem;
+  }
+  
+  #order th {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  #order td {
+    color: #555;
+  }
+  
+  /* Khoảng cách giữa các phần tử */
+  .mb-4 {
+    margin-bottom: 2rem !important;
+  }
+  
+  /* Căn giữa các nội dung */
+  .text-center {
+    text-align: center;
+  }
+  

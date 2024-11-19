@@ -32,7 +32,7 @@
           <h5 class="widget-title text-white pb-2">LIÊN KẾT NHANH</h5>
           <ul class="menu-list list-unstyled">
             <li><a href="/" class="text-white">Trang chủ</a></li>
-            <li><a href="#" class="text-white">Giới thiệu</a></li>
+            <li><a (click)="navigateToAbout()" class="text-white " style="cursor: pointer;">Giới thiệu</a></li>
             <li><a href="#" class="text-white">Cửa hàng</a></li>
             <li><a href="#" class="text-white">Blogs</a></li>
             <li><a href="#" class="text-white">Liên hệ</a></li>
@@ -46,9 +46,8 @@
           <h5 class="widget-title text-white pb-2">TRỢ GIÚP & THÔNG TIN</h5>
           <ul class="menu-list list-unstyled">
             <li><a href="#" class="text-white">Theo dõi đơn hàng của bạn</a></li>
-            <li><a href="#" class="text-white">Chính sách đổi trả</a></li>
-            <li><a href="#" class="text-white">Vận chuyển + Giao hàng</a></li>
-            <li><a href="#" class="text-white">Liên hệ với chúng tôi</a></li>
+            <li><a (click)="navigateToOrder()" class="text-white" style="cursor: pointer;">Chính sách đổi trả</a></li>
+            <li><a (click)="navigateToPay()" class="text-white" style="cursor: pointer;">Chính sách thanh toán</a></li>
             <li><a href="#" class="text-white">Câu hỏi thường gặp</a></li>
           </ul>
         </div>

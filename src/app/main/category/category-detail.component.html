@@ -1,0 +1,53 @@
+<div class="category-detail">
+    <!-- Hiển thị thông báo lỗi nếu có -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  
+    <!-- Hiển thị thông tin chi tiết danh mục -->
+    <div *ngIf="category" class="category-info">
+      <h2>{{ category.name }}</h2>
+     
+      <!-- Hiển thị danh sách sản phẩm trong danh mục -->
+      <div *ngIf="category.products.length > 0">
+        <h3>Sản phẩm trong {{ category.name }}</h3>
+        <div class="row">
+          <!-- Lặp qua từng sản phẩm trong danh mục -->
+          <div *ngFor="let product of category.products" class="col-md-4 mb-4">
+            <div class="product-card card shadow-sm">
+              <div class="product-images">
+                <!-- Hiển thị ảnh sản phẩm -->
+                <img [src]="product.image1 || 'assets/default-image.jpg'" 
+                     alt="{{ product.name }}" 
+                     class="card-img-top" 
+                     style="max-height: 200px; object-fit: cover;" />
+              </div>
+  
+              <div class="card-body">
+                <h5 class="product-name">{{ product.name }}</h5>
+                <p class="product-price">{{ product.price | currencyFormat }}</p>
+                <p *ngIf="product.isHot" class="badge bg-danger">Sản phẩm nổi bật</p>
+  
+                <div class="d-flex justify-content-between mt-3">
+                  <!-- Nút xem chi tiết sản phẩm -->
+                  <button class="btn btn-primary" (click)="viewProductDetails(product.id)">
+                    Xem chi tiết
+                  </button>
+                  <!-- Nút thêm vào giỏ hàng -->
+                  <button class="btn btn-success" (click)="addToCart(product.id)">
+                    Thêm vào giỏ hàng
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Hiển thị thông báo nếu không có sản phẩm trong danh mục -->
+      <p *ngIf="category.products?.length === 0" class="alert alert-info">
+        Không có sản phẩm trong danh mục này
+      </p>
+    </div>
+  </div>
+  
