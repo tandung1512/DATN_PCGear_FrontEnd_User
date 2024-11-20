@@ -7,7 +7,7 @@ import { CurrencyFormatPipe } from './currency-format.pipe'; // Pipe định d�
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { CartService } from '../../services/cart.service';
+
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // Import CKEditor
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
