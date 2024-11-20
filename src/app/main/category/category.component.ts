@@ -6,6 +6,7 @@ import { CategoryService } from './category.service';  // Dịch vụ lấy danh
 import { ProductService } from '../product/product.service';  // Dịch vụ lấy sản phẩm
 import { Category } from './category.model';  // Model danh mục
 import { Product } from '../product/product.model';  // Model sản phẩm
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-category',
@@ -19,6 +20,7 @@ export class CategoryComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
+    private cartService: CartService,
     private productService: ProductService,
     private router: Router
   ) {}
@@ -60,7 +62,7 @@ export class CategoryComponent implements OnInit {
   }
 
   // Thêm sản phẩm vào giỏ hàng
-  addToCart(productId: string): void {
-    console.log(`Thêm sản phẩm ${productId} vào giỏ hàng`);
+  addToCart(productId: string) {
+    this.cartService.add(productId);
   }
 }

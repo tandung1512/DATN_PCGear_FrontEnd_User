@@ -7,6 +7,7 @@ import { Product } from '../product/product.model';  // Model sản phẩm
 import { CurrencyFormatPipe } from '../product/currency-format.pipe';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { CartService } from '../../services/cart.service';
 
 @Component({
     selector: 'app-category-detail',
@@ -29,6 +30,7 @@ export class CategoryDetailComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private categoryService: CategoryService,
+        private cartService: CartService,
         private productService: ProductService,
         private router: Router
     ) { }
@@ -95,9 +97,9 @@ export class CategoryDetailComponent implements OnInit {
     }
 
     // Thêm sản phẩm vào giỏ hàng
-    addToCart(productId: string): void {
-        console.log(`Thêm sản phẩm ${productId} vào giỏ hàng`);
-    }
+    addToCart(productId: string) {
+        this.cartService.add(productId);
+      }
 
     // Thay đổi trang hiện tại
     changePage(page: number): void {
