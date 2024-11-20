@@ -119,4 +119,11 @@ export class CartService {
   getCheckedItems() {
     return this.items.filter(item => item.checked);
   }
+  clearSelectedItems(selectedItems: any[]) {
+    this.items = this.items.filter(
+      item => !selectedItems.some(selected => selected.id === item.id)
+    );
+    this.saveToLocalStorage();
+  }
+  
 }
