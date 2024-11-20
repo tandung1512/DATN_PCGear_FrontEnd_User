@@ -184,6 +184,12 @@ onDistrictChange(event: Event): void {
       // Gửi yêu cầu API để tạo đơn hàng với token trong header
       this.apiService.post('orders', orderData).subscribe({
         next: () => {
+           // Xóa các sản phẩm đã chọn ra khỏi giỏ hàng
+        this.cartService.clearSelectedItems(this.selectedItems);
+
+        // Xóa danh sách sản phẩm đã chọn từ localStorage
+        localStorage.removeItem('selectedItems');
+
           this.successMessage = 'Đơn hàng đã được xác nhận thành công!';
           this.router.navigate(['/order-success']);  // Điều hướng đến trang thành công
         },

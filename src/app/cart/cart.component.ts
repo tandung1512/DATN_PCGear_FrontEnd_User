@@ -15,7 +15,7 @@ import 'bootstrap';  // Import toàn bộ Bootstrap (JS và CSS)
 })
 export class CartComponent {
  
-  checkAll = false;
+  checkAll: boolean = false;
 
   constructor(public cartService: CartService, private router: Router) {}
 
@@ -32,9 +32,10 @@ export class CartComponent {
   }
 
   // Hàm xử lý thay đổi trạng thái "Chọn tất cả"
-  checkAllItems() {
-    this.cartService.items.forEach(item => item.checked = this.checkAll);
+  checkAllItems(checkAll: boolean): void {
+    this.cartService.items.forEach(item => item.checked = checkAll);
   }
+  
  // Hàm xử lý khi nhấn "Xóa tất cả"
  clearCart() {
   this.cartService.clear();  // Gọi phương thức clear() của CartService để xóa tất cả sản phẩm

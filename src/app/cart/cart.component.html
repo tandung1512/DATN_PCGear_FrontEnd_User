@@ -19,7 +19,7 @@
           <!-- Tùy chọn "Chọn tất cả" và Dropdown xóa sản phẩm -->
           <div *ngIf="cartService.count > 0" class="row mb-3">
             <div class="col-md-9">
-              <input type="checkbox" [(ngModel)]="checkAllItems" (change)="checkAllItems()">
+              <input type="checkbox" [(ngModel)]="checkAll" (change)="checkAllItems(checkAll)">
               <label for="checkAllItems">Chọn tất cả</label>
             </div>
             <div class="col-md-3 text-end">
@@ -96,7 +96,7 @@
           <div class="d-flex justify-content-end ">
             <div class="me-3">
               <h6 class="fs-4">Tổng tiền: {{ getTotalAmount() | number }} VNĐ</h6>
-              <button class="btn btn-primary float-center" (click)="goToConfirm()" [disabled]="!hasCheckedItems()">Thanh toán</button>
+              <button class="btn btn-primary float-center mb-4" (click)="goToConfirm()" [disabled]="!hasCheckedItems()">Thanh toán</button>
 
             </div>
           </div>
