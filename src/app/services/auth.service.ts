@@ -28,7 +28,9 @@ export class AuthService {
           admin: response.admin
         }));
   
-        this.router.navigate(['/']);
+        this.router.navigate(['/']).then(() => {
+          location.reload();
+        })
       }),
       map(response => response.token)
     );

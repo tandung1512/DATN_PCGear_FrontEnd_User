@@ -7,6 +7,10 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { LocationService } from './location.service';
 
+import { FormsModule } from '@angular/forms'; 
+import { Token } from '@angular/compiler';
+
+
 @Component({
   selector: 'app-confirm-order',
   templateUrl: './confirm-order.component.html',
@@ -15,6 +19,7 @@ import { LocationService } from './location.service';
 })
 export class ConfirmOrderComponent implements OnInit {
   userInfoForm: FormGroup;
+  selectedItems: any[] = [];
   userId: string | undefined;
   account: Account | undefined;
   errorMessage = '';
@@ -33,6 +38,7 @@ export class ConfirmOrderComponent implements OnInit {
     private locationService: LocationService
   ) {
     this.userInfoForm = this.fb.group({
+      
       name: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]],
       email: ['', [Validators.required, Validators.email]],
@@ -40,64 +46,83 @@ export class ConfirmOrderComponent implements OnInit {
       province: ['', Validators.required],
       district: ['', Validators.required],
       ward: ['', Validators.required],
-      image: [null]
+      addressDetail: ['', Validators.required],
+      paymentMethod: ['', Validators.required]
+      
     });
   }
 
   ngOnInit(): void {
-    const token = sessionStorage.getItem('token');
+  // Lấy dữ liệu từ localStorage
+  const items = localStorage.getItem('selectedItems');
+  if (items) {
+    this.selectedItems = JSON.parse(items);
+    console.log("selectItemcc: ", this.selectedItems)
+  }
+  
+ 
+    const token = sessionStorage.getItem('authToken');
     if (!token) {
       this.router.navigate(['/login']); // Nếu không có token, chuyển hướng tới trang đăng nhập
       return;
     }
   
     this.loadUserProfile();
-    this.calculateTotalAmount();
+    this.getTotalAmount();
+    this.loadProvinces();
  // Tải danh sách tỉnh
- this.locationService.getLocations().subscribe((data: any) => {
-  console.log('Dữ liệu các tỉnh đã được tải:', data); // Kiểm tra dữ liệu tỉnh
-  this.provinces = data.map((province: any) => ({
-    id: province.Id,
-    name: province.Name,
-    districts: province.Districts
-  }));
-}, error => {
-  console.error('Lỗi khi tải dữ liệu tỉnh:', error);
-});
+ 
+ 
 }
 
 
-
+loadProvinces() {
+  this.locationService.getProvinces().subscribe(
+    (data: any) => {
+      console.log('Provinces from API:', data); // Kiểm tra dữ liệu
+      this.provinces = data;
+      
+    },
+    error => console.error('Error loading provinces:', error)
+  );
+}
 onProvinceChange(event: Event): void {
-  const target = event.target as HTMLSelectElement;
-  const provinceId = target.value;
-
-  if (provinceId) {
-    this.userInfoForm.patchValue({ province: provinceId });
-
-    // Tìm tỉnh trong danh sách provinces
-    const selectedProvince = this.provinces.find(p => p.id === provinceId);
-
-    if (selectedProvince) {
-      this.districts = selectedProvince.districts;  // Cập nhật districts dựa trên tỉnh
-      console.log('Dữ liệu quận/huyện:', this.districts);  // Kiểm tra dữ liệu districts
-    }
-
-    this.userInfoForm.patchValue({ district: '', ward: '' });  // Reset district và ward
+  const provinceCode = (event.target as HTMLSelectElement).value;
+  console.log('Province Code:', provinceCode); 
+  if (provinceCode) {
+    this.userInfoForm.patchValue({ province: provinceCode }); // Lưu tỉnh vào form
+    this.locationService.getDistricts(provinceCode).subscribe(
+      (data: any) => {
+        this.districts = data.districts;
+       
+      },
+      error => {
+        console.error('Error loading districts:', error);
+      }
+    );
   }
+  this.userInfoForm.patchValue({ district: '', ward: '' }); // Reset quận và xã
+  this.wards = []; // Xóa danh sách xã/phường
 }
-
-
 
 onDistrictChange(event: Event): void {
-  const target = event.target as HTMLSelectElement;
-  const districtId = target.value;  // Đảm bảo bạn lấy đúng giá trị của option được chọn
-
-  console.log('District ID:', districtId);  // Log giá trị District ID để kiểm tra
-
-  // Cập nhật giá trị trong form
-  this.userInfoForm.patchValue({ district: districtId });
+  const districtCode = (event.target as HTMLSelectElement).value;
+  console.log('District Code:', districtCode);
+  if (districtCode) {
+    this.userInfoForm.patchValue({ district: districtCode }); // Lưu quận vào form
+    this.locationService.getWards(districtCode).subscribe(
+      (data: any) => {
+        this.wards = data.wards;
+        
+      },
+      error => {
+        console.error('Error loading wards:', error);
+      }
+    );
+  }
+  this.userInfoForm.patchValue({ ward: '' }); // Reset xã/phường
 }
+
 
 
   loadUserProfile(): void {
@@ -118,22 +143,45 @@ onDistrictChange(event: Event): void {
       }
     });
   }
-  
-  // Tính tổng tiền cho đơn hàng
-  calculateTotalAmount(): void {
-    this.totalAmount = this.cartService.items.reduce((total, item) => total + item.qty * item.price, 0);
+  getTotalAmount(): number {
+    return this.selectedItems.reduce((total, item) => total + item.qty * item.price, 0);
+    
   }
 
-  // Xử lý xác nhận đơn hàng và gửi thông tin
   confirmOrder(): void {
+    console.log('Form Value:', this.userInfoForm.value);
     if (this.userInfoForm.valid) {
+      // Cập nhật tổng tiền
+      this.totalAmount = this.getTotalAmount();
+      const paymentMethod = this.userInfoForm.value.paymentMethod;
+        // Chuyển đổi `items` thành `detailedInvoices`
+        
+       
+        const detailedInvoices = this.selectedItems.map((item) => {
+          return {
+            product: { id: item.id, name: item.name, price: item.price }, 
+            quantity: item.qty,
+            paymentMethod: paymentMethod
+          };
+        });
       const orderData = {
-        userId: this.userId,
-        address: this.buildFullAddress(), 
-        items: this.cartService.items,
-        totalAmount: this.totalAmount
+        user: { id: this.userId },  
+        address: this.buildFullAddress(),
+        detailedInvoices: detailedInvoices,
+        totalAmount: this.totalAmount,
+        status: 'pending'  
       };
-
+      console.log("OdderData: ", orderData)
+  
+      
+      const token = sessionStorage.getItem('authToken');
+      
+      if (!token) {
+        this.errorMessage = 'Bạn cần đăng nhập để xác nhận đơn hàng.';
+        return;
+      }
+  
+      // Gửi yêu cầu API để tạo đơn hàng với token trong header
       this.apiService.post('orders', orderData).subscribe({
         next: () => {
           this.successMessage = 'Đơn hàng đã được xác nhận thành công!';
@@ -148,23 +196,39 @@ onDistrictChange(event: Event): void {
       this.errorMessage = 'Vui lòng nhập đầy đủ thông tin trước khi xác nhận đơn hàng.';
     }
   }
-
-  // Tạo địa chỉ đầy đủ khi xác nhận đơn hàng
+  
+  
+  
+  
   buildFullAddress(): string {
-    const address = this.userInfoForm.value.address;
-    const province = this.provinces.find(p => p.id === this.userInfoForm.value.province)?.name;
-    const district = this.districts.find(d => d.id === this.userInfoForm.value.district)?.name;
-    const ward = this.wards.find(w => w.id === this.userInfoForm.value.ward)?.name;
-
-    return `${address}, ${ward ? ward + ', ' : ''}${district ? district + ', ' : ''}${province ? province : ''}`;
-  }
-  // Xử lý việc chọn file ảnh đại diện
-  onFileSelected(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.userInfoForm.patchValue({ image: file });
-      this.userInfoForm.get('image')?.updateValueAndValidity();
+    const addressDetail = this.userInfoForm.value.addressDetail;
+    const provinceCode = Number(this.userInfoForm.value.province);
+    const districtCode = Number(this.userInfoForm.value.district);
+    const wardCode = Number(this.userInfoForm.value.ward);
+  
+    const province = this.provinces.find(p => p.code === provinceCode)?.name;
+    const district = this.districts.find(d => d.code === districtCode)?.name;
+    const ward = this.wards.find(w => w.code === wardCode)?.name;
+  
+    let fullAddress = addressDetail ? addressDetail : '';
+  
+    if (ward) {
+      fullAddress += `, ${ward}`;
     }
+  
+    if (district) {
+      fullAddress += `, ${district}`;
+    }
+  
+    if (province) {
+      fullAddress += `, ${province}`;
+    }
+  
+    return fullAddress;
   }
+  
+  
+  
+ 
   
 }

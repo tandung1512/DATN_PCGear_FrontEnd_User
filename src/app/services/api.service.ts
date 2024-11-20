@@ -24,7 +24,11 @@ export class ApiService {
 
   // Hàm lấy token từ sessionStorage
   private getAuthHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem('authToken');
+    // Nếu không có token, có thể chọn làm gì đó, như hiển thị thông báo
+    if (!token) {
+      console.error('No auth token found!');
+    }
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': token ? `Bearer ${token}` : ''
@@ -37,13 +41,16 @@ export class ApiService {
       .get<T>(`${this.baseUrl}/${endpoint}`, { headers: this.getAuthHeaders() })
       .pipe(catchError(this.handleError));
   }
-
-  // POST request
   post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http
-      .post<T>(`${this.baseUrl}/${endpoint}`, data, { headers: this.getAuthHeaders() })
-      .pipe(catchError(this.handleError));
+    // Nếu data là FormData, không thêm header, ngược lại thêm header Authorization
+    const headers = data instanceof FormData ? undefined : this.getAuthHeaders();
+    
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, data, { headers }).pipe(
+      catchError(this.handleError)
+    );
   }
+
+  
 
   // PUT request
   put<T>(endpoint: string, data: any): Observable<T> {

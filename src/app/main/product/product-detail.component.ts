@@ -6,9 +6,13 @@ import { CartService } from '../../services/cart.service';
 import { CurrencyFormatPipe } from './currency-format.pipe'; // Pipe định dạng tiền tệ
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+
+import { CartService } from '../../services/cart.service';
+
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // Import CKEditor
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-product-detail',
@@ -34,7 +38,10 @@ public editorConfig = {
   constructor(
     private route: ActivatedRoute, // Để lấy thông tin ID từ URL
     private productService: ProductService, // Dịch vụ sản phẩm
-    private router: Router, // Để điều hướng
+
+    private router: Router,
+
+
     private cartService: CartService
   ) {}
 
@@ -75,6 +82,7 @@ public editorConfig = {
       },
     });
   }
+
 
   // Thêm sản phẩm vào giỏ hàng
   addToCart(productId: string) {

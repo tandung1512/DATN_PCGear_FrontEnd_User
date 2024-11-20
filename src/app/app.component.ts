@@ -14,6 +14,7 @@ import { CartService } from './services/cart.service';
 
 import { CartComponent } from './cart/cart.component';
 import { ConfirmOrderComponent } from './cart/confirm-order.component';
+import { OrderSuccessComponent } from './cart/order-success.component';
 
 import { ProductComponent } from './main/product/product.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -40,8 +41,11 @@ import { CategoryDetailComponent } from './main/category/category-detail.compone
     CartComponent,
     CategoryComponent,
     ConfirmOrderComponent,
+
+    OrderSuccessComponent,
     CKEditorModule,
     CategoryDetailComponent,
+
 
   ],
   templateUrl: './app.component.html',  // Hoặc './product.component.html'

@@ -8,12 +8,15 @@ import { CartComponent } from './cart/cart.component';
 import { ProductDetailComponent } from './main/product/product-detail.component';
 
 import { ConfirmOrderComponent } from './cart/confirm-order.component';
+import { OrderSuccessComponent } from './cart/order-success.component';
+
 import { OrderComponent } from './order/order.component';
 import { PayComponent } from './pay/pay.component';
 import { AboutComponent } from './about/about.component';
 import { ProductSearchComponent } from './main/product/product-search.component';
 import { CategoryComponent } from './main/category/category.component';
 import { CategoryDetailComponent } from './main/category/category-detail.component';
+
 
 
 export const routes: Routes = [
@@ -28,8 +31,12 @@ export const routes: Routes = [
 
 
   { path: 'confirm', component: ConfirmOrderComponent },
+
+  { path: 'order-success', component: OrderSuccessComponent },
+
   { path: 'about', component: AboutComponent },
   { path: 'pay', component: PayComponent },
   { path: 'guide', component: OrderComponent },
   { path: 'search', component: ProductSearchComponent },
+
 ];
