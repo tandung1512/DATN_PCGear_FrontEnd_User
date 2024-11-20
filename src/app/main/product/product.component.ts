@@ -19,6 +19,17 @@ export class ProductComponent implements OnInit {
   products: Product[] = [];
   errorMessage: string | null = null;
   searchTerm: string = '';
+  displayedProducts: Product[] = []; 
+   // Các biến phân trang
+   totalProducts: number = 0;
+   pageSize: number = 10;
+   currentPage: number = 1;
+   totalPages: number = 1;
+   pages: number[] = [];
+ 
+   startDisplay: number = 0;
+   endDisplay: number = 0;
+ 
 
   public Editor = ClassicEditor; 
 
@@ -37,7 +48,9 @@ export class ProductComponent implements OnInit {
     table: {
       contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
     },
-    removePlugins: ['ImageResize', 'EasyImage']
+    removePlugins: ['ImageResize', 'EasyImage'], 
+    readonly:true,
+
   };
 
   constructor(
@@ -58,6 +71,9 @@ export class ProductComponent implements OnInit {
           image1: this.productService.getProductImageUrl(product.image1 || 'default-image1.jpg'),
           image2: this.productService.getProductImageUrl(product.image2 || 'default-image2.jpg')
         }));
+        this.totalProducts = this.products.length;
+        this.totalPages = Math.ceil(this.totalProducts / this.pageSize);
+        this.updateDisplayedProducts();
       },
       error: (err) => {
         this.errorMessage = 'Không thể tải sản phẩm nổi bật: ' + err.message;
@@ -65,6 +81,26 @@ export class ProductComponent implements OnInit {
       }
     });
   }
+  // Cập nhật danh sách sản phẩm hiển thị
+  updateDisplayedProducts(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = Math.min(startIndex + this.pageSize, this.totalProducts);  // Tính toán endIndex trong component
+    this.displayedProducts = this.products.slice(startIndex, endIndex);
+
+    // Tạo mảng các số trang
+    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+
+    // Cập nhật giá trị startDisplay và endDisplay
+    this.startDisplay = startIndex + 1;
+    this.endDisplay = endIndex;
+  }
+
+  changePage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updateDisplayedProducts();
+  }
+
 
   viewProductDetails(productId: string): void {
     // Điều hướng đến trang chi tiết sản phẩm với id

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../../services/api.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Category } from './category.model';
 
 @Injectable({
@@ -38,5 +38,14 @@ export class CategoryService {
   // Lấy danh mục nổi bật (kèm sản phẩm nổi bật)
   getHotCategoriesWithHotProducts(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.baseUrl}/hot-with-products`);
+  }
+
+    // Phương thức để lấy danh mục với phân trang
+  getCategoryByIdPanage(id: string, page: number = 1, size: number = 10): Observable<Category> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<Category>(`${this.baseUrl}/get/${id}`, { params });
   }
 }

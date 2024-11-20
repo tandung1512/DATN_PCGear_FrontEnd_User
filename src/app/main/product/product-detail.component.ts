@@ -28,7 +28,7 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
 public editorConfig = {
   toolbar: [],  // Ẩn toolbar
   language: 'en',
-  readOnly: true,  // Đảm bảo CKEditor hoạt động ở chế độ chỉ đọc
+  disabled:true,
 };
 
   constructor(
