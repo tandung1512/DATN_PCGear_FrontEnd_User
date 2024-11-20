@@ -18,7 +18,7 @@ export class CartService {
   
   
   getProduct(id: string): Observable<any> {
-    return this.http.get<any>(`http://localhost:8080/api/products/${id}`).pipe(
+    return this.http.get<any>(`http://localhost:8080/api/products/get/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Lỗi khi lấy sản phẩm:', error);
         return throwError(() => new Error('Không thể lấy sản phẩm'));
