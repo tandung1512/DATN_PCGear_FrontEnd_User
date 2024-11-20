@@ -22,7 +22,7 @@ export class ProductComponent implements OnInit {
   displayedProducts: Product[] = []; 
    // Các biến phân trang
    totalProducts: number = 0;
-   pageSize: number = 10;
+   pageSize: number = 12;
    currentPage: number = 1;
    totalPages: number = 1;
    pages: number[] = [];
@@ -72,7 +72,11 @@ export class ProductComponent implements OnInit {
           image2: this.productService.getProductImageUrl(product.image2 || 'default-image2.jpg')
         }));
         this.totalProducts = this.products.length;
-        this.totalPages = Math.ceil(this.totalProducts / this.pageSize);
+
+        // Cập nhật số trang tổng cộng
+        this.totalPages = this.totalProducts > 0 ? Math.ceil(this.totalProducts / this.pageSize) : 1;
+  
+        this.currentPage = 1; // Đặt trang đầu tiên mặc định
         this.updateDisplayedProducts();
       },
       error: (err) => {
@@ -83,24 +87,34 @@ export class ProductComponent implements OnInit {
   }
   // Cập nhật danh sách sản phẩm hiển thị
   updateDisplayedProducts(): void {
+    if (this.totalProducts === 0) {
+      this.displayedProducts = [];
+      this.pages = [];
+      this.startDisplay = 0;
+      this.endDisplay = 0;
+      return;
+    }
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.totalProducts);  // Tính toán endIndex trong component
+    const endIndex = Math.min(startIndex + this.pageSize, this.totalProducts);
+    
     this.displayedProducts = this.products.slice(startIndex, endIndex);
-
+  
     // Tạo mảng các số trang
     this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-
+  
     // Cập nhật giá trị startDisplay và endDisplay
     this.startDisplay = startIndex + 1;
     this.endDisplay = endIndex;
   }
-
+  
   changePage(page: number): void {
+    // Kiểm tra nếu số trang hợp lệ
     if (page < 1 || page > this.totalPages) return;
+  
     this.currentPage = page;
     this.updateDisplayedProducts();
   }
-
 
   viewProductDetails(productId: string): void {
     // Điều hướng đến trang chi tiết sản phẩm với id
