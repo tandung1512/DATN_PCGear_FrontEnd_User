@@ -38,14 +38,14 @@ export class CartComponent {
   
  // Hàm xử lý khi nhấn "Xóa tất cả"
  clearCart() {
-  this.cartService.clear();  // Gọi phương thức clear() của CartService để xóa tất cả sản phẩm
+  this.cartService.clear(); 
   this.checkAll = false; 
 
  }
    // Xác nhận xóa giỏ hàng
    confirmClearCart() {
-    this.cartService.clear();  // Gọi phương thức clear() để xóa tất cả sản phẩm
-    this.closeDropdown(); // Đóng dropdown sau khi xóa
+    this.cartService.clear();  
+    this.closeDropdown(); 
   }
   closeDropdown() {
     const dropdown = document.getElementById('dropdownMenuButton');
