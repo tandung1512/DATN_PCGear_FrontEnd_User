@@ -9,6 +9,8 @@ import { Product } from '../main/product/product.model';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../main/category/category.service';
 import { Category } from '../main/category/category.model';
+import { ActivatedRoute } from '@angular/router';
+
 
 
 @Component({
@@ -27,13 +29,16 @@ export class HeaderComponent implements OnInit {
   products: Product[] = [];
   categories: Category[] = [];  // Định nghĩa allCategories
   errorMessage: string | null = null;
+  selectedBanner: any;
 
   constructor(
     private router: Router,
     private authService: AuthService,
     public cartService: CartService,
     private productService: ProductService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private routeAc: ActivatedRoute,
+    
   ) { }
 
 
@@ -64,6 +69,8 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.checkLoginStatus(); // Kiểm tra trạng thái đăng nhập khi component được khởi tạo
     this.loadCategories();
+     
+    
   }
 
   // Kiểm tra trạng thái đăng nhập và cập nhật thông tin người dùng

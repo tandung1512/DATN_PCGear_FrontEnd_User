@@ -2,35 +2,14 @@
   <!-- Carousel -->
   <div id="carouselExampleAutoplay" class="carousel slide col-9" data-bs-ride="carousel">
     <div class="carousel-inner">
-      <!-- Slide 1 -->
-      <div class="carousel-item active">
-        <img src="https://theme.hstatic.net/1000333506/1001120678/14/slider_2.jpg?v=641" class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          
-        </div>
-      </div>
-      <!-- Slide 2 -->
-      <div class="carousel-item">
-        <img src="https://theme.hstatic.net/1000333506/1001120678/14/slider_3.jpg?v=641" class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-     
-        </div>
-      </div>
-      <!-- Slide 3 -->
-      <div class="carousel-item">
-        <img src="https://theme.hstatic.net/1000333506/1001120678/14/slider_1.jpg?v=641" class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          
-        </div>
-      </div>
-      <!-- Slide 4 -->
-      <div class="carousel-item">
-        <img src="https://theme.hstatic.net/1000333506/1001120678/14/slider_4.jpg?v=641" class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          
+      <div *ngFor="let banner of banners; let i = index">
+        <div *ngIf="banner.active" class="carousel-item" [ngClass]="{'active': i === 0}">
+          <img [src]="banner.img" style="height: 900px; width: 1400px;" alt="...">
+          <div class="carousel-caption d-none d-md-block"></div>
         </div>
       </div>
     </div>
+    
 
     <!-- Controls (optional) -->
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplay" data-bs-slide="prev">
@@ -42,11 +21,13 @@
       <span class="visually-hidden">Next</span>
     </button>
 
-    
+
   </div>
   <div class="d-flex flex-column ms-3 col-3 ">
-    <img src="//theme.hstatic.net/1000333506/1001120678/14/right_banner_1.jpg?v=641" alt="Image 1" class="img-fluid mb-2">
-    <img src="//theme.hstatic.net/1000333506/1001120678/14/bottom_banner_1.jpg?v=641" alt="Image 1" class="img-fluid mb-2">
+    <img src="//theme.hstatic.net/1000333506/1001120678/14/right_banner_1.jpg?v=641" alt="Image 1"
+      class="img-fluid mb-2">
+    <img src="//theme.hstatic.net/1000333506/1001120678/14/bottom_banner_1.jpg?v=641" alt="Image 1"
+      class="img-fluid mb-2">
     <img src="//theme.hstatic.net/1000333506/1001120678/14/bottom_banner_3.jpg?v=641" alt="Image 1" class="img-fluid">
   </div>
 </div>
