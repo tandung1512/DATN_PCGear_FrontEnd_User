@@ -6,6 +6,7 @@ import { CartService } from '../services/cart.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { LocationService } from './location.service';
+import { AuthService } from '../services/auth.service';
 
 
 
@@ -20,7 +21,7 @@ export class ConfirmOrderComponent implements OnInit {
   userInfoForm: FormGroup;
   newAddressForm!: FormGroup;
   selectedItems: any[] = [];
-  userId: string | undefined;
+  userId: string | null = null;
   account: Account | undefined;
   errorMessage = '';
   successMessage = '';
@@ -39,6 +40,7 @@ export class ConfirmOrderComponent implements OnInit {
     private apiService: ApiService,
     private cartService: CartService,  // Dịch vụ giỏ hàng
     private router: Router,
+    private authService: AuthService,
     private locationService: LocationService
   ) {
     this.userInfoForm = this.fb.group({
@@ -66,6 +68,7 @@ export class ConfirmOrderComponent implements OnInit {
 
   ngOnInit(): void {
   // Lấy dữ liệu từ localStorage
+  this.userId = this.authService.getUserId();
   const items = localStorage.getItem('selectedItems');
   if (items) {
     this.selectedItems = JSON.parse(items);
@@ -145,7 +148,8 @@ onDistrictChange(event: Event): void {
 
 
 loadUserProfile(): void {
-  this.apiService.get<Account>('accounts/profile').subscribe({
+  console.log(`Loading user profile for ID: ${this.userId}`);
+  this.apiService.get<Account>(`accounts/profile/${this.userId}`).subscribe({
     next: (response: Account) => {
       this.account = response;
       this.userId = response.id;

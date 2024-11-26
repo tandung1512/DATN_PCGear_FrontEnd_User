@@ -94,7 +94,7 @@ export class UserInfoComponent implements OnInit {
     });
 
     // Gửi PUT request
-    this.apiService.put(`accounts/profile/${this.userId}`, formData).subscribe({
+    this.apiService.put(`accounts/${this.userId}`, formData).subscribe({
       next: () => {
         this.successMessage = 'Chỉnh sửa thông tin người dùng thành công!';
         setTimeout(() => {
