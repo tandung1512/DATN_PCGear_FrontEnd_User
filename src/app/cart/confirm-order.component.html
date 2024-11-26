@@ -1,149 +1,182 @@
 <div class="container">
-    <h2>Xác nhận đơn hàng</h2>
-    <div class="container mt-5">
-      
-      <div *ngIf="selectedItems.length > 0; else noItemsTemplate">
-        <div class="row mb-3 text-uppercase fw-bold">
-          <div class="col-md-2"></div>
-          <div class="col-md-4">Tên sản phẩm</div>
-          <div class="col-md-2 text-center">Số lượng</div>
-          <div class="col-md-2 text-center">Đơn giá</div>
-          <div class="col-md-2 text-center">Thành tiền</div>
-        </div>
+  <h2>Xác nhận đơn hàng</h2>
+  <div class="container mt-5">
     
-        <div *ngFor="let item of selectedItems" class="row mb-4">
-          <div class="col-md-2">
-            <img [src]="item.imageUrl" alt="Product Image" width="90" height="70" class="rounded" />
-          </div>
-          <div class="col-md-4">
-            <h6>{{ item.name }}</h6>
-            <!-- <p class="text-muted">{{ item.description }}</p> -->
-          </div>
-          <div class="col-md-2 text-center">
-            <span>{{ item.qty }}</span>
-          </div>
-          <div class="col-md-2 text-center">
-            <span>{{ item.price | number }} VNĐ</span>
-          </div>
-          <div class="col-md-2 text-center">
-            <span>{{ (item.qty * item.price) | number }} VNĐ</span>
-          </div>
-        </div>
-    
-        <hr />
-        
+    <div *ngIf="selectedItems.length > 0; else noItemsTemplate">
+      <div class="row mb-3 text-uppercase fw-bold">
+        <div class="col-md-2"></div>
+        <div class="col-md-4">Tên sản phẩm</div>
+        <div class="col-md-2 text-center">Số lượng</div>
+        <div class="col-md-2 text-center">Đơn giá</div>
+        <div class="col-md-2 text-center">Thành tiền</div>
       </div>
-    
-      <ng-template #noItemsTemplate>
-        <div class="text-center text-muted mt-4 ">
-          <p>Không có sản phẩm nào để xác nhận!</p>
-        </div>
-      </ng-template>
-        
-    
-    </div>
-    
-    <!-- Hiển thị thông tin người dùng -->
-    <div class="user-info">
-      <h3>Thông tin người dùng</h3>
-      <form [formGroup]="userInfoForm" (ngSubmit)="confirmOrder()">
-        <div class="mb-3">
-          <label for="name" class="form-label">Tên người dùng</label>
-          <input
-            type="text"
-            id="name"
-            formControlName="name"
-            class="form-control"
-            [value]="account?.name"
-          />
-        </div>
   
-        <div class="mb-3">
-          <label for="phone" class="form-label">Số điện thoại</label>
-          <input
-            type="text"
-            id="phone"
-            formControlName="phone"
-            class="form-control"
-            [value]="account?.phone"
-          />
+      <div *ngFor="let item of selectedItems" class="row mb-4">
+        <div class="col-md-2">
+          <img [src]="item.imageUrl" alt="Product Image" width="90" height="70" class="rounded" />
         </div>
+        <div class="col-md-4">
+          <h6>{{ item.name }}</h6>
+          <!-- <p class="text-muted">{{ item.description }}</p> -->
+        </div>
+        <div class="col-md-2 text-center">
+          <span>{{ item.qty }}</span>
+        </div>
+        <div class="col-md-2 text-center">
+          <span>{{ item.price | number }} VNĐ</span>
+        </div>
+        <div class="col-md-2 text-center">
+          <span>{{ (item.qty * item.price) | number }} VNĐ</span>
+        </div>
+      </div>
   
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input
-            type="email"
-            id="email"
-            formControlName="email"
-            class="form-control"
-            [value]="account?.email"
-          />
-        </div>
-  
-        <div class="mb-3">
-          <label>Tỉnh/Thành phố</label>
-          <select class="form-select" formControlName="province" (change)="onProvinceChange($event)">
-            <option value="">Chọn Tỉnh/Thành</option>
-            <option *ngFor="let province of provinces" [value]="province.code">{{ province.name }}</option>
-          </select>
-        </div>
-    
-        <div class="mb-3">
-          <label>Quận/Huyện</label>
-          <select class="form-select" formControlName="district" (change)="onDistrictChange($event)">
-            <option value="">Chọn Quận/Huyện</option>
-            <option *ngFor="let district of districts" [value]="district.code">{{ district.name }}</option>
-          </select>
-        </div>
-    
-        <div class="mb-3">
-          <label>Xã/Phường</label>
-          <select class="form-select" formControlName="ward">
-            <option value="">Chọn Xã/Phường</option>
-            <option *ngFor="let ward of wards" [value]="ward.code">{{ ward.name }}</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="addressDetail" class="form-label">Địa chỉ chi tiết</label>
-          <input
-            type="text"
-            id="addressDetail"
-            formControlName="addressDetail"
-            class="form-control"
-            placeholder="Nhập địa chỉ chi tiết"
-          />
-        </div>
-          
-        <div>
-          <label for="paymentMethod">Phương thức thanh toán</label>
-          <select id="paymentMethod" class="form-control" formControlName="paymentMethod">
-            <option value="">Chọn phương thức thanh toán</option>
-            <option value="credit">Thẻ tín dụng</option>
-            <option value="cash">Tiền mặt</option>
-            <option value="bankTransfer">Chuyển khoản ngân hàng</option>
-            <!-- Thêm các phương thức thanh toán khác nếu cần -->
-          </select>
-          <div *ngIf="userInfoForm.get('paymentMethod')?.invalid && userInfoForm.get('paymentMethod')?.touched" class="text-danger">
-            Phương thức thanh toán là bắt buộc.
-          </div>
-        </div>
-        
-       
-  
-        <!-- Hiển thị thông báo lỗi hoặc thành công -->
-        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-        <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
-        <div class="order-summary">
-          <h3>Tổng quan đơn hàng</h3>
-          <h5>Tổng tiền: {{ getTotalAmount() | number }} VNĐ</h5>
-        </div>
-        <!-- Xác nhận đơn hàng -->
-        <button type="submit" class="btn btn-primary" [disabled]="userInfoForm.invalid">
-          Xác nhận đơn hàng
-        </button>
-      </form>
+      <hr />
+      
     </div>
   
-   
+    <ng-template #noItemsTemplate>
+      <div class="text-center text-muted mt-4 ">
+        <p>Không có sản phẩm nào để xác nhận!</p>
+      </div>
+    </ng-template>
+      
+  
   </div>
   
+  <!-- Hiển thị thông tin người dùng -->
+  <div class="user-info">
+    <h3>Thông tin người dùng</h3>
+    <form [formGroup]="userInfoForm" (ngSubmit)="confirmOrder()">
+      <div class="mb-3">
+        <label for="name" class="form-label">Tên người dùng</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="form-control"
+          [value]="account?.name"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="phone" class="form-label">Số điện thoại</label>
+        <input
+          type="text"
+          id="phone"
+          formControlName="phone"
+          class="form-control"
+          [value]="account?.phone"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          [value]="account?.email"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="savedAddresses" class="form-label">Địa chỉ đã lưu</label>
+        <select
+          id="savedAddresses"
+          class="form-select"
+          formControlName="selectedAddress"
+          (change)="onAddressChange($event)">
+          <option value="">Chọn địa chỉ</option>
+          <option *ngFor="let address of savedAddresses" [value]="address.id">
+            {{ address.detail }}, {{ address.ward }}, {{ address.district }}, {{ address.province }}
+          </option>
+        </select>
+      </div>
+      
+      <div class="mb-3">
+        <button type="button" class="btn btn-outline-primary" (click)="toggleAddressForm()">
+          Thêm địa chỉ mới
+        </button>
+      </div>
+      
+      <!-- Form Thêm địa chỉ mới -->
+      <div *ngIf="showAddressForm" class="border p-3 mt-3">
+        <h5>Thêm địa chỉ mới</h5>
+        <form [formGroup]="newAddressForm">
+          <div class="mb-3">
+            <label for="newProvince" class="form-label">Tỉnh/Thành phố</label>
+            <select class="form-select" formControlName="province" (change)="onProvinceChange($event)">
+              <option value="">Chọn Tỉnh/Thành</option>
+              <option *ngFor="let province of provinces" [value]="province.code">
+                {{ province.name }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="newDistrict" class="form-label">Quận/Huyện</label>
+            <select class="form-select" formControlName="district" (change)="onDistrictChange($event)">
+              <option value="">Chọn Quận/Huyện</option>
+              <option *ngFor="let district of districts" [value]="district.code">
+                {{ district.name }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="newWard" class="form-label">Xã/Phường</label>
+            <select class="form-select" formControlName="ward">
+              <option value="">Chọn Xã/Phường</option>
+              <option *ngFor="let ward of wards" [value]="ward.code">
+                {{ ward.name }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="newdetail" class="form-label">Địa chỉ chi tiết</label>
+            <input
+              type="text"
+              id="newdetail"
+              formControlName="detail"
+              class="form-control"
+              placeholder="Nhập địa chỉ chi tiết"
+            />
+          </div>
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary me-2" (click)="cancelAddressForm()">Hủy</button>
+            <button type="button" class="btn btn-primary" (click)="addNewAddress()">Lưu</button>
+          </div>
+        </form>
+      </div>
+      
+      <div>
+        <label for="paymentMethod">Phương thức thanh toán</label>
+        <select id="paymentMethod" class="form-control" formControlName="paymentMethod">
+          <option value="">Chọn phương thức thanh toán</option>
+          <option value="credit">Thẻ tín dụng</option>
+          <option value="cash">Tiền mặt</option>
+          <option value="bankTransfer">Chuyển khoản ngân hàng</option>
+          <!-- Thêm các phương thức thanh toán khác nếu cần -->
+        </select>
+        <div *ngIf="userInfoForm.get('paymentMethod')?.invalid && userInfoForm.get('paymentMethod')?.touched" class="text-danger">
+          Phương thức thanh toán là bắt buộc.
+        </div>
+      </div>
+      
+     
+
+      <!-- Hiển thị thông báo lỗi hoặc thành công -->
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+      <div class="order-summary">
+        <h3>Tổng quan đơn hàng</h3>
+        <h5>Tổng tiền: {{ getTotalAmount() | number }} VNĐ</h5>
+      </div>
+      <!-- Xác nhận đơn hàng -->
+      <button type="submit" class="btn btn-primary" [disabled]="userInfoForm.invalid">
+        Xác nhận đơn hàng
+      </button>
+    </form>
+  </div>
+
+ 
+</div>

@@ -29,7 +29,7 @@ export class UserInfoComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]],
       email: ['', [Validators.required, Validators.email]],
-      address: ['', Validators.required],
+      // address: ['', Validators.required],
       image: [null]
     });
   }

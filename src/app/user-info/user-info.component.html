@@ -14,13 +14,13 @@
     <form [formGroup]="userInfoForm" (ngSubmit)="updateProfile()">
       <!-- ID Field (disabled) -->
       <div class="mb-3">
-        <label for="id" class="form-label">ID</label>
+        <label for="id" class="form-label">Tên Đăng Nhập</label>
         <input type="text" id="id" formControlName="id" class="form-control" readonly required />
       </div>
   
       <!-- Name Field -->
       <div class="mb-3">
-        <label for="name" class="form-label">Tên</label>
+        <label for="name" class="form-label">Họ&Tên</label>
         <input type="text" id="name" formControlName="name" class="form-control" required />
         <div *ngIf="userInfoForm.get('name')?.invalid && userInfoForm.get('name')?.touched" class="text-danger">
             Tên không được để trống.
@@ -55,13 +55,13 @@
       </div>
   
       <!-- Address Field -->
-      <div class="mb-3">
+      <!-- <div class="mb-3">
         <label for="address" class="form-label">Địa chỉ</label>
         <input type="text" id="address" formControlName="address" class="form-control" required />
         <div *ngIf="userInfoForm.get('address')?.invalid && userInfoForm.get('address')?.touched" class="text-danger">
          Địa chỉ không được để trống.
         </div>
-      </div>
+      </div> -->
   
       <!-- Image Upload Field -->
       <div class="mb-3">

@@ -7,8 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { LocationService } from './location.service';
 
-import { FormsModule } from '@angular/forms'; 
-import { Token } from '@angular/compiler';
+
 
 
 @Component({
@@ -19,6 +18,7 @@ import { Token } from '@angular/compiler';
 })
 export class ConfirmOrderComponent implements OnInit {
   userInfoForm: FormGroup;
+  newAddressForm!: FormGroup;
   selectedItems: any[] = [];
   userId: string | undefined;
   account: Account | undefined;
@@ -28,6 +28,10 @@ export class ConfirmOrderComponent implements OnInit {
   provinces: any[] = [];
   districts: any[] = [];
   wards: any[] = [];
+  savedAddresses: any[] = [];
+  selectedAddress: any;
+  showAddressForm: boolean = false;
+
   
 
   constructor(
@@ -42,7 +46,8 @@ export class ConfirmOrderComponent implements OnInit {
       name: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]],
       email: ['', [Validators.required, Validators.email]],
-      address: ['', Validators.required],
+      selectedAddress: [''],
+      
       province: ['', Validators.required],
       district: ['', Validators.required],
       ward: ['', Validators.required],
@@ -50,6 +55,13 @@ export class ConfirmOrderComponent implements OnInit {
       paymentMethod: ['', Validators.required]
       
     });
+    this.newAddressForm = this.fb.group({
+      province: ['', Validators.required],
+      district: ['', Validators.required],
+      ward: ['', Validators.required],
+      detail: ['', Validators.required],
+    });
+    
   }
 
   ngOnInit(): void {
@@ -70,11 +82,18 @@ export class ConfirmOrderComponent implements OnInit {
     this.loadUserProfile();
     this.getTotalAmount();
     this.loadProvinces();
+    
  // Tải danh sách tỉnh
  
  
 }
-
+toggleAddressForm(): void {
+  this.showAddressForm = !this.showAddressForm; // Ẩn/hiện form
+}
+cancelAddressForm(): void {
+  this.showAddressForm = false; // Ẩn form khi nhấn hủy
+  this.newAddressForm.reset(); // Reset lại form
+}
 
 loadProvinces() {
   this.locationService.getProvinces().subscribe(
@@ -125,73 +144,133 @@ onDistrictChange(event: Event): void {
 
 
 
-  loadUserProfile(): void {
-    this.apiService.get<Account>('accounts/profile').subscribe({
-      next: (response: Account) => {
-        this.account = response;
-        this.userId = response.id;
-        this.userInfoForm.patchValue({
-          name: this.account.name,
-          phone: this.account.phone,
-          email: this.account.email,
-          address: this.account.address  // Chỉ sử dụng address từ account
-        });
+loadUserProfile(): void {
+  this.apiService.get<Account>('accounts/profile').subscribe({
+    next: (response: Account) => {
+      this.account = response;
+      this.userId = response.id;
+      
+      // Lấy danh sách địa chỉ từ tài khoản
+      if (this.account.addresses && this.account.addresses.length > 0) {
+        this.savedAddresses = this.account.addresses;
+        const defaultAddress = this.account.addresses.find(addr => addr.isDefault);
+        
+        // Nếu có địa chỉ mặc định, tự động điền
+        if (defaultAddress) {
+          this.fillAddressToForm(defaultAddress);
+        }
+      }
+
+      this.userInfoForm.patchValue({
+        name: this.account.name,
+        phone: this.account.phone,
+        email: this.account.email,
+      });
+    },
+    error: (error) => {
+      console.error('Error loading user profile:', error);
+      this.errorMessage = 'Không thể tải thông tin người dùng. Vui lòng đăng nhập lại.';
+    }
+  });
+}
+
+
+addNewAddress(): void {
+  if (this.newAddressForm.valid) {
+    const newAddress = this.newAddressForm.value;
+    const token = sessionStorage.getItem('authToken');  // Lấy token từ sessionStorage
+
+    console.log('Token:', token);
+    const provinceName = this.provinces.find(p => p.code === Number(newAddress.province))?.name;
+const districtName = this.districts.find(d => d.code === Number(newAddress.district))?.name;
+const wardName = this.wards.find(w => w.code === Number(newAddress.ward))?.name;
+
+    // Kiểm tra nếu thông tin địa chỉ bị thiếu
+    if (!provinceName || !districtName || !wardName) {
+      this.errorMessage = 'Vui lòng chọn đầy đủ thông tin tỉnh, huyện, xã.';
+      return;
+    }
+      // Cập nhật lại dữ liệu trước khi gửi
+      newAddress.province = provinceName;
+      newAddress.district = districtName;
+      newAddress.ward = wardName;  
+
+    // Gửi yêu cầu POST kèm token trong header
+    this.apiService.post(`accounts/${this.userId}/addresses`, newAddress).subscribe({
+      next: () => {
+        this.successMessage = 'Địa chỉ mới đã được thêm!';
+        this.savedAddresses.push({ ...newAddress, id: this.savedAddresses.length + 1 });
+        this.showAddressForm = false;
       },
       error: (error) => {
-        console.error('Error loading user profile:', error);
-        this.errorMessage = 'Không thể tải thông tin người dùng. Vui lòng đăng nhập lại.';
+        console.error('Error adding new address:', error);
+        this.errorMessage = 'Không thể thêm địa chỉ. Vui lòng thử lại!';
       }
     });
+  } else {
+    this.errorMessage = 'Vui lòng nhập đầy đủ thông tin địa chỉ!';
   }
+}
+
+
+
+
+onAddressChange(event: Event): void {
+  const selectedId = (event.target as HTMLSelectElement).value; // Lấy giá trị của ID địa chỉ đã chọn
+  const selectedAddress = this.savedAddresses.find(addr => addr.id === Number(selectedId)); // Tìm địa chỉ tương ứng
+
+  if (selectedAddress) {
+    this.fillAddressToForm(selectedAddress); // Gọi hàm để điền thông tin vào form
+  }
+}
+
+fillAddressToForm(address: any): void {
+  console.log('Filling address to form:', address);
+  this.userInfoForm.patchValue({
+    addressDetail: address.detail,  
+    ward: address.ward,
+    district: address.district,  
+    province: address.province  
+  });
+}
+
+
   getTotalAmount(): number {
     return this.selectedItems.reduce((total, item) => total + item.qty * item.price, 0);
     
   }
 
   confirmOrder(): void {
-    console.log('Form Value:', this.userInfoForm.value);
+    
     if (this.userInfoForm.valid) {
-      // Cập nhật tổng tiền
-      this.totalAmount = this.getTotalAmount();
-      const paymentMethod = this.userInfoForm.value.paymentMethod;
-        // Chuyển đổi `items` thành `detailedInvoices`
-        
-       
-        const detailedInvoices = this.selectedItems.map((item) => {
-          return {
-            product: { id: item.id, name: item.name, price: item.price }, 
-            quantity: item.qty,
-            paymentMethod: paymentMethod
-          };
-        });
+      const selectedAddressId = this.userInfoForm.value.selectedAddress;
+      const selectedAddress = this.savedAddresses.find(addr => addr.id === Number(selectedAddressId));
+  
+      const address = selectedAddress
+        ? `${selectedAddress.detail}, ${selectedAddress.ward}, ${selectedAddress.district}, ${selectedAddress.province}`
+        : this.buildFullAddress();
+  
       const orderData = {
-        user: { id: this.userId },  
-        address: this.buildFullAddress(),
-        detailedInvoices: detailedInvoices,
-        totalAmount: this.totalAmount,
-        status: 'pending'  
+        user: { id: this.userId },
+        address: address,
+        detailedInvoices: this.selectedItems.map(item => ({
+          product: { id: item.id, name: item.name, price: item.price },
+          quantity: item.qty,
+          paymentMethod: this.userInfoForm.value.paymentMethod,
+        })),
+        
+        totalAmount: this.getTotalAmount(),
+       
+        status: 'pending'
       };
-      console.log("OdderData: ", orderData)
   
-      
-      const token = sessionStorage.getItem('authToken');
-      
-      if (!token) {
-        this.errorMessage = 'Bạn cần đăng nhập để xác nhận đơn hàng.';
-        return;
-      }
-  
-      // Gửi yêu cầu API để tạo đơn hàng với token trong header
+      console.log('Order Data:', orderData);
       this.apiService.post('orders', orderData).subscribe({
         next: () => {
-           // Xóa các sản phẩm đã chọn ra khỏi giỏ hàng
-        this.cartService.clearSelectedItems(this.selectedItems);
-
-        // Xóa danh sách sản phẩm đã chọn từ localStorage
-        localStorage.removeItem('selectedItems');
+          this.cartService.clearSelectedItems(this.selectedItems);
 
           this.successMessage = 'Đơn hàng đã được xác nhận thành công!';
-          this.router.navigate(['/order-success']);  // Điều hướng đến trang thành công
+          this.router.navigate(['/order-success']);
         },
         error: (error) => {
           console.error('Error confirming order:', error);
@@ -201,7 +280,9 @@ onDistrictChange(event: Event): void {
     } else {
       this.errorMessage = 'Vui lòng nhập đầy đủ thông tin trước khi xác nhận đơn hàng.';
     }
+    
   }
+  
   
   
   
@@ -238,3 +319,5 @@ onDistrictChange(event: Event): void {
  
   
 }
+
+  
