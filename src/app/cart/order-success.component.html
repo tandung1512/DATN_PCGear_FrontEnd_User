@@ -1,11 +1,10 @@
-<div class="container">
-    <h2 class="text-success">Chúc mừng! Đơn hàng của bạn đã được xác nhận thành công.</h2>
-    <p class="lead">Cảm ơn bạn đã đặt hàng với chúng tôi!</p>
-  
-    <div *ngIf="orderId">
-      <p>Đơn hàng của bạn có mã ID: <strong>{{ orderId }}</strong></p>
-    </div>
-  
-    <button class="btn btn-primary" (click)="goToHomePage()">Về trang chủ</button>
+<div class="container d-flex flex-column justify-content-center align-items-center "style="height: 37.5vh;">
+  <h2 class="text-success text-center">Chúc mừng! Đơn hàng của bạn đã được xác nhận thành công.</h2>
+  <p class="lead text-center">Cảm ơn bạn đã đặt hàng với chúng tôi!</p>
+
+  <div *ngIf="orderId">
+    <p class="text-center">Đơn hàng của bạn có mã ID: <strong>{{ orderId }}</strong></p>
   </div>
-  
+
+  <button class="btn btn-primary mt-4" (click)="goToHomePage()">Về trang chủ</button>
+</div>
