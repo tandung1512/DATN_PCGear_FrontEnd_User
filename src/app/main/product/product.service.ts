@@ -1,7 +1,7 @@
 // src/app/product/product.service.ts
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Product } from './product.model';
 import { ApiService } from '../../services/api.service';
 import { HttpClient } from '@angular/common/http';
@@ -31,12 +31,19 @@ export class ProductService {
     return this.apiService.getImageUrl(imageName);
   }
   
-  searchProducts(name: string): Observable<Product[]> {
-    return this.http.get<any>(`${this.baseUrl}/search?name=${encodeURIComponent(name)}`);
-  }
+  // searchProducts(name: string): Observable<Product[]> {
+  //   return this.http.get<any>(`${this.baseUrl}/search/item?name=${encodeURIComponent(name)}`);
+  // }
 
+    // Gọi API tìm kiếm sản phẩm theo tên
+    searchProduct(name: string): Observable<Product[]> {
+      const url = `${this.baseUrl}/search/item?name=${name}`;
+      return this.http.get<Product[]>(url);
+    }
+  
    // Lấy tất cả sản phẩm nổi bật (isHot = true)
    getHotProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.baseUrl}/hot`);
   }
+
 }

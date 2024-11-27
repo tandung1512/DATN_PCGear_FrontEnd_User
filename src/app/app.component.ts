@@ -22,6 +22,7 @@ import { ProductDetailComponent } from './main/product/product-detail.component'
 import { CategoryComponent } from './main/category/category.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CategoryDetailComponent } from './main/category/category-detail.component';
+import { ProductSearchComponent } from './main/product/product-search.component';
 
 
 @Component({
@@ -41,7 +42,7 @@ import { CategoryDetailComponent } from './main/category/category-detail.compone
     CartComponent,
     CategoryComponent,
     ConfirmOrderComponent,
-
+    ProductSearchComponent,
     OrderSuccessComponent,
     CKEditorModule,
     CategoryDetailComponent,

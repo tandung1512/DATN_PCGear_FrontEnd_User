@@ -2,31 +2,32 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <style>
   /* Hiển thị dropdown khi hover */
-.navbar-nav .nav-item:hover .dropdown-menu {
-  display: block;
-  
-}
-.dropdown-item:hover{
-  color: aliceblue;
-}
-.dropdown-item{
-  color: black;
-}
+  .navbar-nav .nav-item:hover .dropdown-menu {
+    display: block;
 
-/* Đảm bảo menu con luôn có vị trí chính xác */
-.navbar-nav .dropdown-menu {
-  display: none;
-  position: absolute;
-  z-index: 1500; /* Đảm bảo dropdown luôn nổi bật */
-  top: 100%;
-  left: 0;
-  background-color: #fff;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  
-  border-radius: 4px;
-}
+  }
 
+  .dropdown-item:hover {
+    color: aliceblue;
+  }
 
+  .dropdown-item {
+    color: black;
+  }
+
+  /* Đảm bảo menu con luôn có vị trí chính xác */
+  .navbar-nav .dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 1500;
+    /* Đảm bảo dropdown luôn nổi bật */
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+  }
 </style>
 <nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
   <div class="container-fluid">
@@ -38,12 +39,13 @@
     </a>
     <a (click)="navigateToAbout()" class="text-white"
       style="cursor: pointer; font-weight: bold;text-decoration: none;">Giới thiệu</a>
-   
+
     <!-- Menu dropdown -->
     <div class="navbar-nav ms-auto">
       <!-- Hiển thị danh mục -->
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-weight: bold;">
+        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+          data-bs-toggle="dropdown" aria-expanded="false" style="font-weight: bold;">
           Danh mục
         </a>
         <!-- Menu con của danh mục -->
@@ -51,7 +53,7 @@
           <!-- Hiển thị tất cả các danh mục khi hover -->
           <li *ngFor="let category of categories">
             <!-- Sử dụng <button> thay vì <a> -->
-            <button class="dropdown-item"(click)="goToCategory(category.id, $event)">
+            <button class="dropdown-item" (click)="goToCategory(category.id, $event)">
               {{ category.name }}
             </button>
           </li>
@@ -67,13 +69,15 @@
         <ul class="navbar-nav flex-row-2 justify-content-right">
 
           <!-- Thanh tìm kiếm -->
-          <form class="d-flex me-3" role="search">
+          <form class="d-flex me-3" (ngSubmit)="onSearch()">
             <input class="form-control me-2" name="searchTerm" [(ngModel)]="searchTerm" type="search"
-              placeholder="Tìm kiếm..." aria-label="Search">
-            <button (click)="onSearch()" class="btn btn-outline-success" type="submit">
+              placeholder="Nhập từ khóa tìm kiếm..." aria-label="Search" required />
+            <button class="btn btn-success" type="submit" title="Tìm kiếm">
               <i class="bi bi-search"></i>
             </button>
           </form>
+
+
 
           <!-- Hiển thị nút Login/Register nếu người dùng chưa đăng nhập -->
           <ng-container *ngIf="!isLoggedIn">
@@ -124,7 +128,7 @@
                 </div>
 
                 <!-- Dropdown Menu -->
-                
+
               </li>
             </div>
           </div>
@@ -132,34 +136,33 @@
       </div>
     </div>
   </div>
-  <div *ngIf="cartOpen" class="dropdown-menu show"
-                  style="display: block; width: 300px; right: 0; top: 100%;">
-                  <div class="modal-body p-3">
-                    <div *ngIf="cartCount > 0; else emptyCart">
-                      <div style="max-height: 300px; overflow-y: auto;">
-                        <ul class="minicart-product-list list-unstyled">
-                          <li *ngFor="let item of cartService.items" class="d-flex mb-3">
-                            <img [src]="item.imageUrl" alt="Product Image" width="70px" height="70px" class="rounded" />
-                            <div class="minicart-product-details ms-3">
+  <div *ngIf="cartOpen" class="dropdown-menu show" style="display: block; width: 300px; right: 0; top: 100%;">
+    <div class="modal-body p-3">
+      <div *ngIf="cartCount > 0; else emptyCart">
+        <div style="max-height: 300px; overflow-y: auto;">
+          <ul class="minicart-product-list list-unstyled">
+            <li *ngFor="let item of cartService.items" class="d-flex mb-3">
+              <img [src]="item.imageUrl" alt="Product Image" width="70px" height="70px" class="rounded" />
+              <div class="minicart-product-details ms-3">
 
-                              <p class="text-danger fw-bold mt-1">
-                                {{ item.price | number: '1.0-0' }} vnđ x {{ item.qty }}
-                              </p>
-                            </div>
-                            <button class="btn-close ms-auto" (click)="removeItem(item.id)" aria-label="Close"></button>
-                          </li>
-                        </ul>
-                      </div>
-                      <p class="minicart-total">
-                        Tổng: <span>{{ cartAmount | number: '1.0-0' }} vnđ</span>
-                      </p>
-                      <button class="btn btn-primary btn-block mt-3" (click)="ToCart()">Xem giỏ hàng</button>
-                    </div>
+                <p class="text-danger fw-bold mt-1">
+                  {{ item.price | number: '1.0-0' }} vnđ x {{ item.qty }}
+                </p>
+              </div>
+              <button class="btn-close ms-auto" (click)="removeItem(item.id)" aria-label="Close"></button>
+            </li>
+          </ul>
+        </div>
+        <p class="minicart-total">
+          Tổng: <span>{{ cartAmount | number: '1.0-0' }} vnđ</span>
+        </p>
+        <button class="btn btn-primary btn-block mt-3" (click)="ToCart()">Xem giỏ hàng</button>
+      </div>
 
-                    <!-- Hiển thị khi giỏ hàng trống -->
-                    <ng-template #emptyCart>
-                      <p class="text-center">Bạn chưa có sản phẩm nào!</p>
-                    </ng-template>
-                  </div>
-                </div>
+      <!-- Hiển thị khi giỏ hàng trống -->
+      <ng-template #emptyCart>
+        <p class="text-center">Bạn chưa có sản phẩm nào!</p>
+      </ng-template>
+    </div>
+  </div>
 </nav>

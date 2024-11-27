@@ -1,3 +1,34 @@
+<style>
+.card {
+  height: 100%; /* Chiều cao cố định cho toàn bộ card */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-body {
+  flex: 1;
+  overflow: hidden; /* Ẩn nội dung tràn ra ngoài */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Nội dung được căn chỉnh lên trên */
+}
+
+.card-title {
+  height: 50%; /* Đặt chiều cao cố định cho tiêu đề */
+}
+
+.card-footer {
+  margin-top: auto; /* Đẩy footer xuống cuối thẻ */
+}
+
+.category-image {
+  height: 250px; 
+  object-fit: contain; 
+}
+
+
+</style>
 <div class="hot-categories">
     <h2>Các Danh Mục Nổi Bật</h2>
   
@@ -24,7 +55,7 @@
                       [src]="product.image1 || 'assets/default-image.jpg'" 
                       alt="{{ product.name }}" 
                       class="card-img-top" 
-                      style="height: 200px; object-fit: cover;" />
+                      style="height: 250px; object-fit: contain;" />
                   </div>
   
                   <div class="card-body">
@@ -32,12 +63,12 @@
                     <!-- Hiển thị giá sản phẩm -->
                     <p><strong>Giá: {{ product.price | currencyFormat }}</strong></p>
                     <!-- Hiển thị thông tin sản phẩm nổi bật -->
-                    <p *ngIf="product.isHot" class="badge bg-danger">Sản phẩm nổi bật</p>
+                    <p *ngIf="product.isHot" class="badge bg-danger"style="width: 40%;">Sản phẩm nổi bật</p>
   
                     <!-- Nút xem chi tiết -->
                     <div class="d-flex justify-content-between mt-3">
                       <button class="btn btn-primary" (click)="viewProductDetails(product.id)">Xem chi tiết</button>
-                      <button class="btn btn-success" (click)="addToCart(product.id)">Thêm vào giỏ hàng</button>
+                      <button class="btn btn-success bi bi-cart" (click)="addToCart(product.id)"> Thêm vào giỏ hàng</button>
                     </div>
                   </div>
                 </div>

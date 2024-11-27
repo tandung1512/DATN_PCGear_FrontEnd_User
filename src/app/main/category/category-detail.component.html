@@ -1,79 +1,74 @@
-<div class="category-detail">
-    <!-- Hiển thị thông báo lỗi nếu có -->
-    <div *ngIf="errorMessage" class="alert alert-danger">
-      {{ errorMessage }}
-    </div>
-  
-    <!-- Hiển thị thông tin chi tiết danh mục -->
-    <div *ngIf="category" class="category-info">
-      <h2 class="mb-4">{{ category.name }}</h2>
-  
-      <!-- Hiển thị danh sách sản phẩm -->
-      <div *ngIf="displayedProducts.length > 0; else noProducts" class="row">
-        <div class="col-md-4 mb-4" *ngFor="let product of displayedProducts">
-          <div class="card shadow-sm h-100">
-            <!-- Ảnh sản phẩm -->
-            <img
-              [src]="product.image1 || 'assets/default-image.jpg'"
-              alt="{{ product.name }}"
-              class="card-img-top"
-              style="height: 200px; object-fit: cover;" />
-  
-            <!-- Thông tin sản phẩm -->
-            <div class="card-body d-flex flex-column">
-              <h5 class="product-name mb-2">{{ product.name }}</h5>
-              <p class="product-price text-success fw-bold mb-3">{{ product.price | currencyFormat }}</p>
-  
-              <!-- Hành động -->
-              <div class="mt-auto">
-                <button class="btn btn-primary w-100 mb-2" (click)="viewProductDetails(product.id)">
-                  Xem chi tiết
-                </button>
-                <button class="btn btn-success w-100" (click)="addToCart(product.id)">
-                  Thêm vào giỏ hàng
-                </button>
-              </div>
+<div class="category-detail container py-4">
+  <!-- Hiển thị thông báo lỗi nếu có -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Hiển thị thông tin chi tiết danh mục -->
+  <div *ngIf="category" class="category-info">
+    <h2 class="mb-4 text-center">{{ category.name }}</h2>
+
+    <!-- Hiển thị danh sách sản phẩm -->
+    <div *ngIf="displayedProducts.length > 0; else noProducts" class="row g-4">
+      <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let product of displayedProducts">
+        <div class="card shadow-sm h-100">
+          <!-- Ảnh sản phẩm -->
+          <img
+            [src]="product.image1 || 'assets/default-image.jpg'"
+            alt="{{ product.name }}"
+            class="card-img-top"
+            style="height: 250px; object-fit: contain;" />
+
+          <!-- Thông tin sản phẩm -->
+          <div class="card-body d-flex flex-column">
+            <h5 class="product-name text-truncate mb-2">{{ product.name }}</h5>
+            <p class="product-price text-success fw-bold mb-3">{{ product.price | currencyFormat }}</p>
+
+            <!-- Hành động -->
+            <div class="d-flex justify-content-between mt-3">
+              <button class="btn btn-primary" (click)="viewProductDetails(product.id)">Xem chi tiết</button>
+              <button class="btn btn-success bi bi-cart" (click)="addToCart(product.id)"> Thêm vào giỏ hàng</button>
             </div>
           </div>
         </div>
       </div>
-  
-      <!-- Phân trang -->
-      <div class="pagination-container mt-4 d-flex justify-content-between align-items-center ">
-        <div>
-            Hiển thị tổng số {{ totalProducts }} sản phẩm
-          </div>
-  
-        <nav >
-          <ul class="pagination mb-0 ">
-            <!-- Nút trước -->
-            <li class="page-item" [class.disabled]="currentPage === 1">
-              <button class="page-link" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
-                Trước
-              </button>
-            </li>
-  
-            <!-- Các số trang -->
-            <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
-              <button class="page-link" (click)="changePage(page)">{{ page }}</button>
-            </li>
-  
-            <!-- Nút sau -->
-            <li class="page-item" [class.disabled]="currentPage === totalPages">
-              <button class="page-link" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
-                Sau
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
     </div>
-  
-    <!-- Mẫu khi không có sản phẩm -->
-    <ng-template #noProducts>
-      <div class="alert alert-warning">
-        Không có sản phẩm trong danh mục này.
+
+    <!-- Phân trang -->
+    <div class="pagination-container mt-4 d-flex justify-content-between align-items-center">
+      <div>
+        Hiển thị tổng số <strong>{{ totalProducts }}</strong> sản phẩm
       </div>
-    </ng-template>
+
+      <nav>
+        <ul class="pagination mb-0">
+          <!-- Nút trước -->
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+              Trước
+            </button>
+          </li>
+
+          <!-- Các số trang -->
+          <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+            <button class="page-link" (click)="changePage(page)">{{ page }}</button>
+          </li>
+
+          <!-- Nút sau -->
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+              Sau
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
-  
+
+  <!-- Mẫu khi không có sản phẩm -->
+  <ng-template #noProducts>
+    <div class="alert alert-warning text-center">
+      Không có sản phẩm trong danh mục này.
+    </div>
+  </ng-template>
+</div>

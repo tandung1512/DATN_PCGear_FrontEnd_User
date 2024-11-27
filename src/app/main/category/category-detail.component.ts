@@ -44,6 +44,7 @@ export class CategoryDetailComponent implements OnInit {
             const categoryId = params.get('id');
             if (categoryId) {
                 this.loadCategoryDetail(categoryId);
+                
             } else {
                 this.handleInvalidCategory();
             }

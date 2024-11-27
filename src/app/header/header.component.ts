@@ -108,10 +108,12 @@ export class HeaderComponent implements OnInit {
     this.isAdmin = false;
     this.router.navigate(['/']);
   }
-
   onSearch(): void {
-    this.router.navigate(['/search'], { queryParams: { searchTerm: this.searchTerm } });
+    if (this.searchTerm.trim()) {
+      this.router.navigate(['/search'], { queryParams: { searchTerm: this.searchTerm } });
+    }
   }
+  
 
   navigateToAbout() {
     this.router.navigate(['/about']);  // Điều hướng đến trang Giới thiệu

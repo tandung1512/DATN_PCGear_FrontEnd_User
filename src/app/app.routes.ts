@@ -28,7 +28,7 @@ export const routes: Routes = [
   { path: 'category', component: CategoryComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'category/:id', component: CategoryDetailComponent },
-
+  { path: 'search', component: ProductSearchComponent },
 
   { path: 'confirm', component: ConfirmOrderComponent },
 
