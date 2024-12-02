@@ -1,3 +1,10 @@
+<nav aria-label="breadcrumb" *ngIf="products" class="product-info">
+  <ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="#">Tìm kiếm sản phẩm</a></li>
+    <!-- <li class="breadcrumb-item active" aria-current="page">{{ products. }}</li> -->
+  </ol>
+</nav>
+
 <div *ngIf="products.length > 0; else noResults" class="row g-4">
   <div class="col-md-3 col-sm-6" *ngFor="let product of products">
     <div class="card h-100">
