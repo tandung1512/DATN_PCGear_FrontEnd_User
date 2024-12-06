@@ -1,5 +1,11 @@
 <div class="container">
   <h2>Xác nhận đơn hàng</h2>
+  <nav aria-label="breadcrumb" *ngIf="selectedItems" class="confirm-info">
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a href="/confirm">Thanh toán</a></li>
+    
+    </ol>
+  </nav>
   <div class="container mt-5">
     
     <div *ngIf="selectedItems.length > 0; else noItemsTemplate">

@@ -2,6 +2,12 @@
 <div class="container ">
   <div class="mb-4">
   <h3 class="font-weight-bold md-3">Giỏ hàng của bạn</h3> </div>
+  <nav aria-label="breadcrumb" *ngIf="cartService" class="cart-info">
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a href="/cart">Giỏ hàng</a></li>
+      
+    </ol>
+  </nav>
   <div class="row">
     <div class="col-12">
       <div class="card" style="border-radius: 15px;">
