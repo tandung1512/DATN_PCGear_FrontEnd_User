@@ -5,8 +5,16 @@ import { Account } from '../account/account.model';
 import { CartService } from '../services/cart.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { LocationService } from './location.service';
+import { ghnService } from './ghn.service';
 import { AuthService } from '../services/auth.service';
+import { distinctUntilChanged } from 'rxjs/operators';
+// Định nghĩa interface District
+interface District {
+  DistrictID: number;
+  DistrictName: string;
+  WardCode: number;
+  WardName: string;
+}
 
 
 
@@ -32,6 +40,15 @@ export class ConfirmOrderComponent implements OnInit {
   savedAddresses: any[] = [];
   selectedAddress: any;
   showAddressForm: boolean = false;
+  shippingFee: number | null = null;
+  services: any[] = [];
+  selectedServiceId: number | null = null;
+  
+  
+  
+
+
+
 
   
 
@@ -41,7 +58,7 @@ export class ConfirmOrderComponent implements OnInit {
     private cartService: CartService,  // Dịch vụ giỏ hàng
     private router: Router,
     private authService: AuthService,
-    private locationService: LocationService
+    private ghnService: ghnService
   ) {
     this.userInfoForm = this.fb.group({
       
@@ -49,12 +66,11 @@ export class ConfirmOrderComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]],
       email: ['', [Validators.required, Validators.email]],
       selectedAddress: [''],
-      
-      province: ['', Validators.required],
-      district: ['', Validators.required],
-      ward: ['', Validators.required],
-      addressDetail: ['', Validators.required],
-      paymentMethod: ['', Validators.required]
+      paymentMethod: ['', Validators.required],
+      weight: [1000, Validators.required],
+      districtId: ['', Validators.required],
+      service: ['', Validators.required],
+      wardCode: ['', Validators.required],
       
     });
     this.newAddressForm = this.fb.group({
@@ -73,6 +89,7 @@ export class ConfirmOrderComponent implements OnInit {
   if (items) {
     this.selectedItems = JSON.parse(items);
     console.log("selectItemcc: ", this.selectedItems)
+   
   }
   
  
@@ -86,7 +103,8 @@ export class ConfirmOrderComponent implements OnInit {
     this.getTotalAmount();
     this.loadProvinces();
     
- // Tải danh sách tỉnh
+    
+ 
  
  
 }
@@ -99,67 +117,77 @@ cancelAddressForm(): void {
 }
 
 loadProvinces() {
-  this.locationService.getProvinces().subscribe(
-    (data: any) => {
-      console.log('Provinces from API:', data); // Kiểm tra dữ liệu
-      this.provinces = data;
-      
+  this.ghnService.getProvinces().subscribe(
+    (response: any) => {
+      console.log('Provinces from API:', response);
+      // Trích xuất mảng provinces từ data
+      this.provinces = response.data;  // Gán data cho provinces
     },
-    error => console.error('Error loading provinces:', error)
+    error => {
+      console.error('Error loading provinces:', error);
+    }
   );
+  
 }
 onProvinceChange(event: Event): void {
-  const provinceCode = (event.target as HTMLSelectElement).value;
-  console.log('Province Code:', provinceCode); 
-  if (provinceCode) {
-    this.userInfoForm.patchValue({ province: provinceCode }); // Lưu tỉnh vào form
-    this.locationService.getDistricts(provinceCode).subscribe(
-      (data: any) => {
-        this.districts = data.districts;
-       
+  const provinceId = (event.target as HTMLSelectElement).value;  
+  
+  if (provinceId) {
+    this.userInfoForm.patchValue({ province: provinceId });  
+    this.ghnService.getDistricts(Number(provinceId)).subscribe(
+      (response: any) => {
+        console.log('Districts from API:', response);
+        this.districts = response.data;  
       },
       error => {
         console.error('Error loading districts:', error);
       }
     );
+  } else {
+    console.error('Invalid Province ID:', provinceId);
   }
-  this.userInfoForm.patchValue({ district: '', ward: '' }); // Reset quận và xã
-  this.wards = []; // Xóa danh sách xã/phường
+  this.userInfoForm.patchValue({ district: '', ward: '' });
+  this.districts = [];
+  this.wards = [];
 }
+
+
+
 
 onDistrictChange(event: Event): void {
-  const districtCode = (event.target as HTMLSelectElement).value;
-  console.log('District Code:', districtCode);
-  if (districtCode) {
-    this.userInfoForm.patchValue({ district: districtCode }); // Lưu quận vào form
-    this.locationService.getWards(districtCode).subscribe(
-      (data: any) => {
-        this.wards = data.wards;
-        
+  const districtId = (event.target as HTMLSelectElement).value;  // Đang lấy value từ dropdown
+  console.log('Selected District ID:', districtId); // Kiểm tra districtId
+
+  if (districtId) {
+    this.userInfoForm.patchValue({ district: districtId });
+
+    this.ghnService.getWards(Number(districtId)).subscribe(
+      (response: any) => {
+        console.log('Wards from API:', response); // Kiểm tra dữ liệu wards trả về
+        this.wards = response.data;  // Gán data cho danh sách wards
       },
-      error => {
-        console.error('Error loading wards:', error);
-      }
+      error => console.error('Error loading wards:', error)
     );
   }
-  this.userInfoForm.patchValue({ ward: '' }); // Reset xã/phường
-}
 
+  
+  this.userInfoForm.patchValue({ ward: '' });
+  this.wards = [];
+}
 
 
 loadUserProfile(): void {
-  console.log(`Loading user profile for ID: ${this.userId}`);
+ 
+
   this.apiService.get<Account>(`accounts/profile/${this.userId}`).subscribe({
     next: (response: Account) => {
       this.account = response;
       this.userId = response.id;
-      
-      // Lấy danh sách địa chỉ từ tài khoản
+
       if (this.account.addresses && this.account.addresses.length > 0) {
         this.savedAddresses = this.account.addresses;
-        const defaultAddress = this.account.addresses.find(addr => addr.isDefault);
-        
-        // Nếu có địa chỉ mặc định, tự động điền
+
+        const defaultAddress = this.account.addresses.find((addr) => addr.isDefault);
         if (defaultAddress) {
           this.fillAddressToForm(defaultAddress);
         }
@@ -169,42 +197,64 @@ loadUserProfile(): void {
         name: this.account.name,
         phone: this.account.phone,
         email: this.account.email,
+    
       });
+
+     
+
     },
     error: (error) => {
       console.error('Error loading user profile:', error);
       this.errorMessage = 'Không thể tải thông tin người dùng. Vui lòng đăng nhập lại.';
     }
   });
+
+  
 }
+
+
+
+  
+
 
 
 addNewAddress(): void {
   if (this.newAddressForm.valid) {
     const newAddress = this.newAddressForm.value;
-    const token = sessionStorage.getItem('authToken');  // Lấy token từ sessionStorage
 
-    console.log('Token:', token);
-    const provinceName = this.provinces.find(p => p.code === Number(newAddress.province))?.name;
-const districtName = this.districts.find(d => d.code === Number(newAddress.district))?.name;
-const wardName = this.wards.find(w => w.code === Number(newAddress.ward))?.name;
-
+    // Lấy tên tỉnh, huyện, xã dựa trên ID
+    const provinceName = this.provinces.find(p => p.ProvinceID === Number(newAddress.province))?.ProvinceName;
+    const districtName = this.districts.find(d => d.DistrictID === Number(newAddress.district))?.DistrictName;
+    const wardName = this.wards.find(w => w.WardCode === newAddress.ward)?.WardName;
+    console.log('Selected Address:', {
+      province: provinceName,
+      district: districtName,
+      ward: wardName,
+      detail: newAddress.detail
+    });
+    
     // Kiểm tra nếu thông tin địa chỉ bị thiếu
     if (!provinceName || !districtName || !wardName) {
       this.errorMessage = 'Vui lòng chọn đầy đủ thông tin tỉnh, huyện, xã.';
       return;
     }
-      // Cập nhật lại dữ liệu trước khi gửi
-      newAddress.province = provinceName;
-      newAddress.district = districtName;
-      newAddress.ward = wardName;  
+
+    // Cập nhật lại dữ liệu trước khi gửi
+    const completeAddress = {
+      ...newAddress,
+      province: provinceName,
+      district: districtName,
+      ward: wardName
+    };
 
     // Gửi yêu cầu POST kèm token trong header
-    this.apiService.post(`accounts/${this.userId}/addresses`, newAddress).subscribe({
-      next: () => {
+    this.apiService.post(`accounts/${this.userId}/addresses`, completeAddress).subscribe({
+      next: (response: any) => {
+        const newAddressId = response.id; 
         this.successMessage = 'Địa chỉ mới đã được thêm!';
-        this.savedAddresses.push({ ...newAddress, id: this.savedAddresses.length + 1 });
+        this.savedAddresses.push({ ...completeAddress, id: newAddressId });
         this.showAddressForm = false;
+        this.newAddressForm.reset(); // Reset form sau khi thêm địa chỉ
       },
       error: (error) => {
         console.error('Error adding new address:', error);
@@ -224,25 +274,85 @@ onAddressChange(event: Event): void {
   const selectedAddress = this.savedAddresses.find(addr => addr.id === Number(selectedId)); // Tìm địa chỉ tương ứng
 
   if (selectedAddress) {
-    this.fillAddressToForm(selectedAddress); // Gọi hàm để điền thông tin vào form
+    
+    // Gọi API GHN để lấy danh sách các district
+    this.ghnService.getDistricts(Number(selectedAddress.province)).subscribe(
+      (response: any) => {
+       
+        const district = response.data.find((d: District) => d.DistrictName === selectedAddress.district);
+        
+        if (district) {
+          const districtId = district.DistrictID;  
+          selectedAddress.districtId = districtId;  // Thêm trường districtId vào address
+          console.log('districtId',districtId);
+            // Gọi API để lấy danh sách các wards (phường xã) trong district
+            this.ghnService.getWards(districtId).subscribe(
+              (Response: any) => {
+                // Tìm wardCode tương ứng với wardName
+                const ward = Response.data.find((w: District) => w.WardName === selectedAddress.ward);
+  
+                if (ward) {
+                  const wardCode = ward.WardCode;  // Lấy wardCode từ API
+                  selectedAddress.wardCode = wardCode;  // Thêm wardCode vào address
+                  console.log('wardCode', wardCode);
+                  this.selectedAddress = selectedAddress;
+                  
+                  this.fillAddressToForm(selectedAddress);
+                  this.loadAvailableServices();
+                } else {
+                  console.error('Không tìm thấy wardCode cho wardName:', selectedAddress.ward);
+                }
+              },
+              error => {
+                console.error('Error loading wards:', error);
+              }
+            );
+  
+          
+        
+        } else {
+          console.error('Không tìm thấy districtId cho districtName:', selectedAddress.district);
+        }
+      },
+      error => {
+        console.error('Error loading districts:', error);
+      }
+    );
   }
+   // Reset selected service khi thay đổi địa chỉ
+   this.selectedServiceId = null;  // Reset dịch vụ
+   this.userInfoForm.patchValue({ service: '' });
 }
 
 fillAddressToForm(address: any): void {
-  console.log('Filling address to form:', address);
   this.userInfoForm.patchValue({
-    addressDetail: address.detail,  
+    addressDetail: address.detail,
     ward: address.ward,
-    district: address.district,  
-    province: address.province  
+    district: address.district,
+    province: address.province,
+    districtId: address.districtId,
+    wardCode: address.wardCode,
+    
   });
+
+  
+ 
 }
+
+
 
 
   getTotalAmount(): number {
     return this.selectedItems.reduce((total, item) => total + item.qty * item.price, 0);
     
   }
+  calculateTotalAmount() {
+    const totalProductPrice = this.getTotalAmount();
+    if (this.shippingFee !== null) {
+      this.totalAmount = totalProductPrice + this.shippingFee;  // Cộng phí giao hàng vào tổng tiền
+    } else {
+      this.totalAmount = totalProductPrice;  // Nếu chưa có phí giao hàng, chỉ tính tổng tiền sản phẩm
+    }}
 
   confirmOrder(): void {
     
@@ -255,6 +365,7 @@ fillAddressToForm(address: any): void {
         : this.buildFullAddress();
   
       const orderData = {
+        
         user: { id: this.userId },
         address: address,
         detailedInvoices: this.selectedItems.map(item => ({
@@ -281,6 +392,7 @@ fillAddressToForm(address: any): void {
           this.errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại!';
         }
       });
+      this.createOrder();
     } else {
       this.errorMessage = 'Vui lòng nhập đầy đủ thông tin trước khi xác nhận đơn hàng.';
     }
@@ -289,33 +401,195 @@ fillAddressToForm(address: any): void {
   
   
   
-  
-  
   buildFullAddress(): string {
-    const addressDetail = this.userInfoForm.value.addressDetail;
-    const provinceCode = Number(this.userInfoForm.value.province);
-    const districtCode = Number(this.userInfoForm.value.district);
-    const wardCode = Number(this.userInfoForm.value.ward);
+    const selectedAddress = this.selectedAddress; 
   
-    const province = this.provinces.find(p => p.code === provinceCode)?.name;
-    const district = this.districts.find(d => d.code === districtCode)?.name;
-    const ward = this.wards.find(w => w.code === wardCode)?.name;
-  
-    let fullAddress = addressDetail ? addressDetail : '';
-  
-    if (ward) {
-      fullAddress += `, ${ward}`;
+    if (!selectedAddress) {
+      console.error('Selected address is undefined or null');
+      return '';  
     }
   
-    if (district) {
-      fullAddress += `, ${district}`;
+    console.log('hahahahahahah:', selectedAddress);
+  
+    // Kết hợp các phần địa chỉ thành một chuỗi
+    return `${selectedAddress.detail}, ${selectedAddress.ward}, ${selectedAddress.district}, ${selectedAddress.province}`;
+  }
+  loadAvailableServices(): void {
+    // Kiểm tra địa chỉ đã chọn có đầy đủ thông tin không
+    if (!this.selectedAddress || !this.selectedAddress.districtId) {
+      this.errorMessage = 'Địa chỉ chưa đầy đủ thông tin để tải dịch vụ vận chuyển.';
+      return;
     }
   
-    if (province) {
-      fullAddress += `, ${province}`;
+    // Tạo dịch vụ cố định
+    this.services = [{ service_id: 53321, short_name: 'Giao thường' }];
+    this.successMessage = 'Đã tải dịch vụ vận chuyển cố định: Giao thường.';
+  }
+  
+
+  // loadAvailableServices(): void {
+  //   if (!this.selectedAddress || !this.selectedAddress.districtId) {
+  //     this.errorMessage = 'Địa chỉ chưa đầy đủ thông tin để tải dịch vụ vận chuyển.';
+  //     return;
+  //   }
+  
+  //   const shopId = 195442; // Mã shop cố định hoặc được lấy từ cấu hình
+  //   const fromDistrictId = 1442; // Mã quận xuất phát (cố định hoặc cấu hình)
+  //   const toDistrictId = this.selectedAddress.districtId; // Lấy từ địa chỉ đã chọn
+  
+  //   const requestPayload = {
+  //     shop_id: shopId,
+  //     from_district: fromDistrictId,
+  //     to_district: toDistrictId
+  //   };
+  
+  //   console.log('Loading available services with payload:', requestPayload);
+  
+  //   // Gọi hàm getAvailableServices từ service với payload
+  //   this.ghnService.getAvailableServices(requestPayload).subscribe({
+  //     next: (response: any) => {
+  //       console.log('Available services from GHN:', response);
+  
+  //       // Kiểm tra dữ liệu trả về từ GHN
+  //       if (response && response.code === 200 && Array.isArray(response.data) && response.data.length > 0) {
+  //         this.services = response.data;
+  //         this.successMessage = 'Dịch vụ vận chuyển đã được tải thành công.';
+  //       } else {
+  //         this.services = [{ service_id: 53321, short_name: 'Giao thường' }];
+  //         this.successMessage = 'Không có dịch vụ đặc biệt, sử dụng dịch vụ giao thường.';
+  //       }
+  //     },
+  //     error: (error) => {
+  //       console.error('Error loading available services:', error);
+  //       this.services = [{ service_id: 53321, short_name: 'Giao thường' }];
+  //       this.errorMessage = 'Không thể tải danh sách dịch vụ vận chuyển. Vui lòng thử lại.';
+  //     }
+  //   });
+  // }
+  
+  
+  
+  
+
+
+  onServiceChange(event: Event): void {
+    const selectedServiceId = Number((event.target as HTMLSelectElement).value); 
+    this.selectedServiceId = selectedServiceId;
+    console.log('Dịch vụ được chọn:', selectedServiceId);
+  
+    if (selectedServiceId) {
+      this.userInfoForm.patchValue({ service: selectedServiceId });
     }
   
-    return fullAddress;
+  
+    this.calculateShippingFee();
+  }
+  
+  
+  
+  
+  calculateShippingFee(): void {
+    
+  
+    const formData = this.userInfoForm.value;
+    console.log('formdata:',formData)
+  
+    // Xây dựng data gửi đến GHN API
+    const data = {
+      service_id: this.selectedServiceId, 
+      insurance_value: this.getTotalAmount(), // Giá trị bảo hiểm là tổng tiền hàng
+      from_district_id: 1442, // ID quận/huyện xuất phát (có thể lấy từ backend hoặc cố định)
+      to_district_id: Number(formData.districtId), // ID quận/huyện đích (lấy từ form)
+      to_ward_code: formData.wardCode, // Mã xã/phường đích (lấy từ form)
+      weight: 1000, // Trọng lượng của đơn hàng (lấy từ form)
+      length: 50,  // Chiều dài (cm)
+      width:50,   // Chiều rộng (cm)
+      height: 50   // Chiều cao (cm)
+    };
+    console.log('data',data)
+  
+    this.ghnService.calculateShippingFee(data).subscribe({
+      next: (response) => {
+        if (response && response.data && response.data.total) {
+          this.shippingFee = response.data.total;
+          this.calculateTotalAmount();
+          
+        } else {
+          this.errorMessage = 'Không thể tính phí vận chuyển. Vui lòng thử lại.';
+        }
+        console.log('',this.shippingFee);
+      },
+      error: (error) => {
+        console.error('Error calculating shipping fee:', error);
+        this.errorMessage = 'Không thể tính phí vận chuyển. Vui lòng thử lại!';
+      }
+    });
+  }
+  
+  
+
+  createOrder(): void {
+    if (!this.userInfoForm.valid || this.shippingFee === null) {
+      this.errorMessage = 'Vui lòng nhập đầy đủ thông tin và tính phí vận chuyển trước khi tạo đơn hàng.';
+      return;
+    }
+    const items = localStorage.getItem('selectedItems');
+// Biến để lưu tên sản phẩm
+
+if (items) {
+  this.selectedItems = JSON.parse(items); // Parse dữ liệu từ JSON thành mảng đối tượng
+  console.log("selectedItems: ", this.selectedItems);
+
+  
+  
+}
+  
+    const formData = this.userInfoForm.value;
+    const selectedAddress = this.buildFullAddress();
+    
+  
+    const orderData = {
+      
+      
+      to_name: formData.name,
+      to_phone: formData.phone,
+      to_address: selectedAddress,
+      to_district_id: Number(formData.districtId), 
+      to_ward_code: formData.wardCode, 
+      cod_amount: this.getTotalAmount(), // Số tiền thu COD bằng tổng tiền hàng
+      weight: formData.weight,
+      length: 50, // Chiều dài (cm)
+      width: 50,  // Chiều rộng (cm)
+      height: 50, // Chiều cao (cm)
+      service_id: this.selectedServiceId, 
+      payment_type_id: 2, // Loại hình thanh toán (2 = COD)
+      required_note: 'KHONGCHOXEMHANG', // Ghi chú yêu cầu
+      items: this.selectedItems.map(item => ({
+        name: item.name,
+        code: item.code,
+        quantity: item.qty,
+        price: item.price,
+        length: 5,
+        width: 1,
+        weight: 3,
+        height: 3,
+        category: {
+          
+        }
+      }))
+    };
+  console.log('vaio------',orderData)
+    this.ghnService.createOrder(orderData).subscribe({
+      next: (response) => {
+        console.log('Order created:', response);
+        this.successMessage = 'Đơn hàng đã được tạo thành công!';
+        
+      },
+      error: (error) => {
+        console.error('Error creating order:', error);
+        this.errorMessage = 'Không thể tạo đơn hàng. Vui lòng thử lại!';
+      }
+    });
   }
   
   

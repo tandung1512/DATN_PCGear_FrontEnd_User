@@ -108,17 +108,18 @@
             <label for="newProvince" class="form-label">Tỉnh/Thành phố</label>
             <select class="form-select" formControlName="province" (change)="onProvinceChange($event)">
               <option value="">Chọn Tỉnh/Thành</option>
-              <option *ngFor="let province of provinces" [value]="province.code">
-                {{ province.name }}
+              <option *ngFor="let province of provinces" [value]="province.ProvinceID">
+                {{ province.ProvinceName }}
               </option>
             </select>
+            
           </div>
           <div class="mb-3">
             <label for="newDistrict" class="form-label">Quận/Huyện</label>
             <select class="form-select" formControlName="district" (change)="onDistrictChange($event)">
               <option value="">Chọn Quận/Huyện</option>
-              <option *ngFor="let district of districts" [value]="district.code">
-                {{ district.name }}
+              <option *ngFor="let district of districts" [value]="district.DistrictID">
+                {{ district.DistrictName }}
               </option>
             </select>
           </div>
@@ -126,8 +127,8 @@
             <label for="newWard" class="form-label">Xã/Phường</label>
             <select class="form-select" formControlName="ward">
               <option value="">Chọn Xã/Phường</option>
-              <option *ngFor="let ward of wards" [value]="ward.code">
-                {{ ward.name }}
+              <option *ngFor="let ward of wards" [value]="ward.WardCode">
+                {{ ward.WardName }}
               </option>
             </select>
           </div>
@@ -147,10 +148,30 @@
           </div>
         </form>
       </div>
-      
+   
       <div>
+        <div class="mb-3">
+          <label for="service" class="form-label">Dịch vụ</label>
+          <select
+            id="service"
+            class="form-select"
+            formControlName="service"
+            (change)="onServiceChange($event)">
+            <option value="">Chọn Dịch vụ</option>
+            <option *ngFor="let service of services" [value]="service.service_id">
+              {{ service.short_name }}
+            </option>
+          </select>
+        </div>
+        
+        
+        
+        
+        
+       
+        
         <label for="paymentMethod">Phương thức thanh toán</label>
-        <select id="paymentMethod" class="form-control" formControlName="paymentMethod">
+        <select id="paymentMethod" class="form-control mb-3" formControlName="paymentMethod">
           <option value="">Chọn phương thức thanh toán</option>
           <option value="credit">Thẻ tín dụng</option>
           <option value="cash">Tiền mặt</option>
@@ -169,7 +190,15 @@
       <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
       <div class="order-summary">
         <h3>Tổng quan đơn hàng</h3>
-        <h5>Tổng tiền: {{ getTotalAmount() | number }} VNĐ</h5>
+        <div *ngIf="getTotalAmount() > 0">
+          <h6>Tổng tiền sản phẩm: {{ getTotalAmount() | currency:'VND':'symbol':'1.0-0' }}</h6>
+        </div>
+        <div *ngIf="shippingFee !== null">
+          <h6>Phí vận chuyển: {{ shippingFee | currency:'VND':'symbol':'1.0-0' }}</h6>
+        </div>
+        <div *ngIf="totalAmount > 0">
+          <h4><strong>Tổng cộng: {{ totalAmount | currency:'VND':'symbol':'1.0-0' }}</strong></h4>
+        </div>
       </div>
       <!-- Xác nhận đơn hàng -->
       <button type="submit" class="btn btn-primary" [disabled]="userInfoForm.invalid">
