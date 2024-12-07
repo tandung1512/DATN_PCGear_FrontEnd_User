@@ -163,7 +163,7 @@
             class="form-select"
             formControlName="service"
             (change)="onServiceChange($event)">
-            <option value="">Chọn Dịch vụ</option>
+            <option value="">Chọn Dịch Vụ</option>
             <option *ngFor="let service of services" [value]="service.service_id">
               {{ service.short_name }}
             </option>
