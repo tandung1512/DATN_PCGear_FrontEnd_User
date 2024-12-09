@@ -45,5 +45,16 @@ export class ProductService {
    getHotProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.baseUrl}/hot`);
   }
+  updateProductQuantity(productId: string, quantity: number) {
+    return this.http.put(
+      `${this.baseUrl}/${productId}/update-quantity`,
+      null,
+      {
+        params: { quantity: quantity.toString() },
+        responseType: 'text', // Thêm responseType để chấp nhận plain text
+      }
+    );
+  }
+  
 
 }
