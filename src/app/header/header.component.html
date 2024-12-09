@@ -31,21 +31,20 @@
 </style>
 <nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/" style="width: 10%;text-align: center;">
+    <a class="navbar-brand" href="/" style="width: 10%;text-align: center;font-weight: bold;">
       <img src="https://cdn-icons-png.freepik.com/512/17656/17656508.png" alt="logo" class="img-fluidn ms-5"
         style="width: 20%;text-align: center;">
       PC Gear
 
     </a>
-    <a (click)="navigateToAbout()" class="text-white"
-      style="cursor: pointer; font-weight: bold;text-decoration: none;">Giới thiệu</a>
+  
 
     <!-- Menu dropdown -->
-    <div class="navbar-nav ms-auto">
+    <div class="navbar-nav ms-2">
       <!-- Hiển thị danh mục -->
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
-          data-bs-toggle="dropdown" aria-expanded="false" style="font-weight: bold;">
+        <a class="nav-link  text-white bi bi-list" href="#" id="navbarDropdown" role="button"
+          data-bs-toggle="dropdown" aria-expanded="false">
           Danh mục
         </a>
         <!-- Menu con của danh mục -->
@@ -53,13 +52,16 @@
           <!-- Hiển thị tất cả các danh mục khi hover -->
           <li *ngFor="let category of categories">
             <!-- Sử dụng <button> thay vì <a> -->
-            <button class="dropdown-item" (click)="goToCategory(category.id, $event)">
+            <button class="dropdown-item bi bi-dot" (click)="goToCategory(category.id, $event)">
               {{ category.name }}
             </button>
           </li>
         </ul>
       </li>
     </div>
+
+    <a (click)="navigateToAbout()" class="text-white ms-3"
+    style="cursor: pointer;text-decoration: none;">Giới thiệu</a>
     <!-- Offcanvas menu -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
       <div class="offcanvas-body">
@@ -71,7 +73,7 @@
           <!-- Thanh tìm kiếm -->
           <form class="d-flex me-3" (ngSubmit)="onSearch()">
             <input class="form-control me-2" name="searchTerm" [(ngModel)]="searchTerm" type="search"
-              placeholder="Nhập từ khóa tìm kiếm..." aria-label="Search" required />
+              placeholder="Nhập từ khóa tìm kiếm" aria-label="Search" required />
             <button class="btn btn-success" type="submit" title="Tìm kiếm">
               <i class="bi bi-search"></i>
             </button>

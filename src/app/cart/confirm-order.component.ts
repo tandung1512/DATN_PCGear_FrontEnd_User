@@ -44,14 +44,6 @@ export class ConfirmOrderComponent implements OnInit {
   services: any[] = [];
   selectedServiceId: number | null = null;
   
-  
-  
-
-
-
-
-  
-
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
@@ -92,8 +84,6 @@ export class ConfirmOrderComponent implements OnInit {
     console.log("selectItemcc: ", this.selectedItems)
    
   }
-  
- 
     const token = sessionStorage.getItem('authToken');
     if (!token) {
       this.router.navigate(['/login']); // Nếu không có token, chuyển hướng tới trang đăng nhập
@@ -103,10 +93,6 @@ export class ConfirmOrderComponent implements OnInit {
     this.loadUserProfile();
     this.getTotalAmount();
     this.loadProvinces();
-    
-    
- 
- 
  
 }
 toggleAddressForm(): void {
@@ -152,9 +138,6 @@ onProvinceChange(event: Event): void {
   this.wards = [];
 }
 
-
-
-
 onDistrictChange(event: Event): void {
   const districtId = (event.target as HTMLSelectElement).value;  // Đang lấy value từ dropdown
   console.log('Selected District ID:', districtId); // Kiểm tra districtId
@@ -169,17 +152,12 @@ onDistrictChange(event: Event): void {
       },
       error => console.error('Error loading wards:', error)
     );
-  }
-
-  
+  } 
   this.userInfoForm.patchValue({ ward: '' });
   this.wards = [];
 }
 
-
 loadUserProfile(): void {
- 
-
   this.apiService.get<Account>(`accounts/profile/${this.userId}`).subscribe({
     next: (response: Account) => {
       this.account = response;
@@ -200,24 +178,13 @@ loadUserProfile(): void {
         email: this.account.email,
     
       });
-
-     
-
     },
     error: (error) => {
       console.error('Error loading user profile:', error);
       this.errorMessage = 'Không thể tải thông tin người dùng. Vui lòng đăng nhập lại.';
     }
   });
-
-  
 }
-
-
-
-  
-
-
 
 addNewAddress(): void {
   if (this.newAddressForm.valid) {
@@ -267,9 +234,6 @@ addNewAddress(): void {
   }
 }
 
-
-
-
 onAddressChange(event: Event): void {
   const selectedId = (event.target as HTMLSelectElement).value; // Lấy giá trị của ID địa chỉ đã chọn
   const selectedAddress = this.savedAddresses.find(addr => addr.id === Number(selectedId)); // Tìm địa chỉ tương ứng
@@ -308,9 +272,6 @@ onAddressChange(event: Event): void {
                 console.error('Error loading wards:', error);
               }
             );
-  
-          
-        
         } else {
           console.error('Không tìm thấy districtId cho districtName:', selectedAddress.district);
         }
@@ -424,8 +385,8 @@ fillAddressToForm(address: any): void {
     }
   
     // Tạo dịch vụ cố định
-    this.services = [{ service_id: 53321, short_name: 'Giao thường' }];
-    this.successMessage = 'Đã tải dịch vụ vận chuyển cố định: Giao thường.';
+    this.services = [{ service_id: 53321, short_name: 'Giao Hàng Nhanh' }];
+    this.successMessage = 'Đã chọn dịch vụ vận chuyển cố định: Giao Hàng Nhanh.';
   }
   
 
