@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ghnService } from './ghn.service';
 import { AuthService } from '../services/auth.service';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { ProductService } from '../main/product/product.service';
 // Định nghĩa interface District
 interface District {
   DistrictID: number;
@@ -50,7 +50,8 @@ export class ConfirmOrderComponent implements OnInit {
     private cartService: CartService,  // Dịch vụ giỏ hàng
     private router: Router,
     private authService: AuthService,
-    private ghnService: ghnService
+    private ghnService: ghnService,
+    private productService: ProductService
   ) {
     this.userInfoForm = this.fb.group({
       
@@ -344,7 +345,7 @@ fillAddressToForm(address: any): void {
       this.apiService.post('orders', orderData).subscribe({
         next: () => {
           this.cartService.clearSelectedItems(this.selectedItems);
-
+          this.onPurchase();
           this.successMessage = 'Đơn hàng đã được xác nhận thành công!';
           this.router.navigate(['/order-success']);
         },
@@ -354,6 +355,7 @@ fillAddressToForm(address: any): void {
         }
       });
       this.createOrder();
+      
     } else {
       this.errorMessage = 'Vui lòng nhập đầy đủ thông tin trước khi xác nhận đơn hàng.';
     }
@@ -517,14 +519,14 @@ if (items) {
       to_address: selectedAddress,
       to_district_id: Number(formData.districtId), 
       to_ward_code: formData.wardCode, 
-      cod_amount: this.getTotalAmount(), // Số tiền thu COD bằng tổng tiền hàng
+      cod_amount: this.getTotalAmount(), 
       weight: formData.weight,
-      length: 50, // Chiều dài (cm)
-      width: 50,  // Chiều rộng (cm)
-      height: 50, // Chiều cao (cm)
+      length: 50, 
+      width: 50,  
+      height: 50, 
       service_id: this.selectedServiceId, 
-      payment_type_id: 2, // Loại hình thanh toán (2 = COD)
-      required_note: 'KHONGCHOXEMHANG', // Ghi chú yêu cầu
+      payment_type_id: 2,
+      required_note: 'KHONGCHOXEMHANG',
       items: this.selectedItems.map(item => ({
         name: item.name,
         code: item.code,
@@ -553,6 +555,21 @@ if (items) {
     });
   }
   
+  onPurchase(): void {
+    this.selectedItems.forEach(item => {
+      const productId = item.id; 
+      const quantity = item.qty; 
+  
+      this.productService.updateProductQuantity(productId, quantity).subscribe({
+        next: () => {
+          console.log(`Updated quantity for product ID: ${productId}`);
+        },
+        error: (err) => {
+          console.error(`Failed to update quantity for product ID: ${productId}`, err);
+        },
+      });
+    });
+  }
   
   
  
